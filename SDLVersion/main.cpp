@@ -6,31 +6,32 @@
 #include <memory>
 #include <map>
 #include <SDL/SDL.h>
-#include "CLevel.h"
+
+#include "Vipper.h"
 #include "IRenderer.h"
-#include "CSDLRelativeRenderer.h"
+#include "CLevel.h"
 #include "CGame.h"
+#include "CSDLRenderer.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #include <emscripten/html5.h>
 #endif
 
-BlockyFalls::CGame game; 
+std::shared_ptr<BlockyFalls::CGame> game; 
 
 void gameLoopTick() {
-  game.tick();
+  game->update();
 }
 
 int main ( int argc, char **argv ) {
 
-  auto renderer = new BlockyFalls::CSDLRelativeRenderer();
+  auto renderer = std::make_shared<BlockyFalls::CSDLRenderer>();
+  game = std::make_shared<BlockyFalls::CGame>();
   
-  renderer->init( game.map );
+  renderer->init( game );
 
-  renderer->showTitleScreen();
-
-  game.runGame( renderer );
+  game->runGame( renderer );
 
 #ifdef __EMSCRIPTEN__
   //  emscripten_request_fullscreen(0, 1);

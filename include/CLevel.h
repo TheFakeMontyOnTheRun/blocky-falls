@@ -3,7 +3,7 @@
 
 namespace BlockyFalls {
   class CLevel {
-    std::shared_ptr<EColour> map[ 20 ][ 20 ];
+    
   public:
     enum class EColour{ eRed, eYellow, eGrey, eBlue};
     explicit CLevel();
@@ -11,6 +11,8 @@ namespace BlockyFalls {
     EColour colourAt( int x, int y );
     bool isGameOver();
     bool isLevelCompleted();
+  private:
+    std::shared_ptr<EColour> map[ 20 ][ 20 ];
   };
 }
 #endif

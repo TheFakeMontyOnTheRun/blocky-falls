@@ -10,4 +10,14 @@
 #include "CGame.h"
 
 namespace BlockyFalls {
+	CGame::CGame() {
+	}
+
+	void CGame::update() {
+		this->mRenderer->update();
+	}
+	
+	void CGame::runGame( std::shared_ptr<IRenderer> render ){
+		this->mRenderer = render;	
+	}
 }

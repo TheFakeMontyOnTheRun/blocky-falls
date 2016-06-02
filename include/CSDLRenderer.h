@@ -7,10 +7,10 @@ namespace BlockyFalls {
     SDL_Surface *video;
     std::map<char, SDL_Surface*> sprites;
   public:
-    explicit void init(std::shared_ptr<CLevel> level) override;
+    void init(std::shared_ptr<CGame> game);
     void render() override;
     void shutdown() override;
-    char update() override;
+    void update() override;
   };
 }
 #endif

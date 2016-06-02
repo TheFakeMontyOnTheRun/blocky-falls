@@ -7,9 +7,8 @@ namespace BlockyFalls {
     SDL_Surface *mImageToShow;
     CSDLShowImageRenderer( SDL_Surface *target, SDL_Surface* imageToShow );
   public:
-    virtual void init() override;
     virtual void render() override;
-    virtual char update() override;
+    virtual void update() override;
     virtual void shutdown() override;
     //make builder method here
   };

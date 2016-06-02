@@ -4,9 +4,8 @@
 namespace BlockyFalls {
   class IRenderer {
   public:
-    virtual void init(std::shared_ptr<CLevel> level) = 0;
     virtual void render() = 0;
-    virtual char update() = 0;
+    virtual void update() = 0;
     virtual void shutdown() = 0;
   };
 }
