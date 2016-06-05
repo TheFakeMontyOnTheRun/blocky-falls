@@ -1,0 +1,24 @@
+#include "Modules/TitleScreen/View/CRect.h"
+namespace BlockyFalls {
+	CRect::CRect(): mX0( 0 ), mX1( 0 ), mY0( 0 ), mY1( 0 ) {
+	}
+	
+	CRect::CRect(int x0, int y0, int x1, int y1 ): mX0( x0 ), mX1( x1 ), mY0( y0 ), mY1( y1 ) {
+	}
+			
+	int CRect::getDX() {
+		return mX1 - mX0;
+	}
+	
+	int CRect::getDY() {
+		return mY1 - mY0;
+	}
+	
+	bool isInside( int x, int y ) {
+		return false;
+	}
+	
+	bool insersects( const CRect& another ) {
+		return false;
+	}
+}

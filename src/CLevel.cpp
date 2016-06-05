@@ -8,5 +8,7 @@
 #include "CLevel.h"
 
 namespace BlockyFalls {
-
+	CLevel::CLevel() {
+		
+	}
 }

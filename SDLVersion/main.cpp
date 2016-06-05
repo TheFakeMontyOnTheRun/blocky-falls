@@ -6,42 +6,47 @@
 #include <memory>
 #include <map>
 #include <SDL/SDL.h>
-
-#include "Vipper.h"
-#include "IRenderer.h"
-#include "CLevel.h"
-#include "CGame.h"
+#include <SDL/SDL_mixer.h>
+ 
+#include "Vipper/Vipper.h"
 #include "CSDLRenderer.h"
 
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#include <emscripten/html5.h>
-#endif
-
-std::shared_ptr<BlockyFalls::CGame> game; 
-
-void gameLoopTick() {
-  game->update();
-}
+#include "Modules/Gameplay/Gameplay.h"
+#include "Modules/TitleScreen/TitleScreen.h"
 
 int main ( int argc, char **argv ) {
-
-  auto renderer = std::make_shared<BlockyFalls::CSDLRenderer>();
-  game = std::make_shared<BlockyFalls::CGame>();
+  std::shared_ptr<Vipper::IRouter> nextRouter;
+  std::shared_ptr<Vipper::IPresenter> presenter;
+  std::shared_ptr<Vipper::IRouter> router;
   
-  renderer->init( game );
-
-  game->runGame( renderer );
-
-#ifdef __EMSCRIPTEN__
-  //  emscripten_request_fullscreen(0, 1);
-  emscripten_set_main_loop( gameLoopTick, 30, 1 );
-#else
-  while ( true ) {
-    gameLoopTick();
+  auto renderer = std::make_shared<BlockyFalls::CSDLRenderer>();
+  auto gameplayRouter = std::make_shared<BlockyFalls::CGameplayRouter>(renderer);
+  auto titleScreenRouter = std::make_shared<BlockyFalls::CTitleScreenRouter>(renderer,gameplayRouter);
+  
+  gameplayRouter->initWithDefaults();
+  titleScreenRouter->initWithDefaults();
+  
+  nextRouter = titleScreenRouter;
+  presenter = titleScreenRouter->getPresenter();
+  
+  do {  
+    if ( nextRouter != nullptr ) {
+      if ( router != nullptr ) {
+        router->onRelinquishFocus();
+      }
+      router = nextRouter;
+      router->onFocus();
+      nextRouter = nullptr;
+    }
+    
+    presenter = router->getPresenter();
+    presenter->present();
+    
+    renderer->update();
+    renderer->render();
     SDL_Delay(33);
-  }
-#endif
+    nextRouter = router->route();    
+  } while ( nextRouter != router );
 
   renderer->shutdown();
   return 0;
