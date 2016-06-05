@@ -5,8 +5,9 @@ namespace BlockyFalls {
 
   class CGameplayView : public Vipper::IView, public Vipper::IRenderer::IClickListener {
     std::pair<int,int> mLastClick;
+    std::shared_ptr<CGameSession> mGameSession;
   public:
-    explicit CGameplayView(std::shared_ptr<Vipper::IRenderer> renderer);
+    explicit CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer);
 
     void drawSquareAt( std::tuple<int, int, CLevel::EColour> block );
     void drawTextAt( std::pair<int, int> position, std::string text );

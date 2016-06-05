@@ -13,7 +13,7 @@ namespace BlockyFalls {
 	
 	void CGameplayRouter::initWithDefaults(){
 		auto session = std::make_shared<BlockyFalls::CGameSession>(1000, 1000, 1);
-		auto view = std::make_shared<BlockyFalls::CGameplayView>( getRenderer());
+		auto view = std::make_shared<BlockyFalls::CGameplayView>( session, 	getRenderer());
 		auto presenter = std::make_shared<BlockyFalls::CGameplayPresenter>( session, view);
 		auto interactor = std::make_shared<BlockyFalls::CGameplayInteractor>( shared_from_this());
 		
