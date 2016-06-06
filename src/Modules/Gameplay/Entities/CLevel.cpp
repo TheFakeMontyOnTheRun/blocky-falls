@@ -9,8 +9,7 @@
 namespace BlockyFalls {
   
     void CLevel::addRandomColumn() {
-        std::cout << "adding random column" << std::endl;
-        mColumns.push_back( std::make_shared<CColumn>());
+        mColumns.insert( mColumns.begin(), std::make_shared<CColumn>());
     }
   
     CLevel::CLevel( int initialColumns ) {
