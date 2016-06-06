@@ -70,6 +70,10 @@ namespace BlockyFalls {
       if ( event.type == SDL_MOUSEBUTTONDOWN ) {
         dispatchClickToListeners( std::pair<int, int>( event.button.x, event.button.y ) );
       }
+      
+      if ( event.type == SDL_KEYUP ) {
+        dispatchKeyToListeners( event.key.keysym.sym );
+      }
 
       if ( event.type == SDL_KEYUP ) {
 

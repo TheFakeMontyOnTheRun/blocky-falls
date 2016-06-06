@@ -60,4 +60,8 @@ namespace BlockyFalls {
 		mLastClick.second = position.second / 64;
 		mGameSession->getLevel()->breakBlockAt( mLastClick );
 	}
+	
+	void CGameplayView::onKey( long keyCode ) {
+		mGameSession->getLevel()->addRandomColumn();
+	}
 }

@@ -23,6 +23,25 @@ namespace Vipper {
 			mClickListeners.pop_back();
 		}
 	}
+	
+	void IRenderer::registerKeyListener( std::shared_ptr<IKeyListener> listener ) {
+		mKeyListeners.push_back( listener );
+	}
+	
+    void IRenderer::unregisterKeyListener( std::shared_ptr<IKeyListener> listener ) {
+		auto elementIterator = std::find( mKeyListeners.begin(), mKeyListeners.end(), listener );
+		
+		if ( elementIterator != mKeyListeners.end() ) {
+			std::swap( *elementIterator, mKeyListeners.back() );
+			mKeyListeners.pop_back();
+		}
+	}
+
+	void IRenderer::dispatchKeyToListeners( long keyCode ) {
+		for ( auto& listener : mKeyListeners ) {	
+			listener->onKey( keyCode );
+		}
+	}	
 		
 	void IRenderer::dispatchClickToListeners( std::pair<int, int > pointerPosition ) {
 		for ( auto& listener : mClickListeners ) {	

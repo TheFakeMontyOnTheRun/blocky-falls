@@ -3,7 +3,7 @@
 
 namespace BlockyFalls {
 
-  class CGameplayView : public Vipper::IView, public Vipper::IRenderer::IClickListener {
+  class CGameplayView : public Vipper::IView, public Vipper::IRenderer::IClickListener, public Vipper::IRenderer::IKeyListener {
     std::pair<int,int> mLastClick;
     std::shared_ptr<CGameSession> mGameSession;
   public:
@@ -15,6 +15,7 @@ namespace BlockyFalls {
     std::pair<int, int> getLastClick();
     void show() override;
     void onClick( std::pair< int, int> position ) override;
+    void onKey( long keyCode ) override;
   };
 }
 #endif

@@ -27,9 +27,11 @@ namespace BlockyFalls {
 	
 	void CGameplayRouter::onFocus(){
 		getRenderer()->registerClickListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
+		getRenderer()->registerKeyListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
 	}
 	
 	void CGameplayRouter::onRelinquishFocus(){
 		getRenderer()->unregisterClickListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
+		getRenderer()->unregisterKeyListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
 	}
 }

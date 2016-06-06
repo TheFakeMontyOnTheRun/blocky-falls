@@ -9,9 +9,17 @@ namespace Vipper {
       public:
       virtual void onClick( std::pair<int, int > pointerPosition ) = 0;
     };
+    
+    class IKeyListener {
+      public:
+      virtual void onKey( long keyCode ) = 0;  
+    };
+    
     void dispatchClickToListeners( std::pair<int, int > pointerPosition );
+    void dispatchKeyToListeners( long keyCode );
     
     std::vector< std::shared_ptr<IClickListener>> mClickListeners;
+    std::vector< std::shared_ptr<IKeyListener>> mKeyListeners;
   
     using BitmapId = long;
     using SoundId = long;
@@ -28,6 +36,9 @@ namespace Vipper {
     
     void registerClickListener( std::shared_ptr<IClickListener> listener );
     void unregisterClickListener( std::shared_ptr<IClickListener> listener );
+    
+    void registerKeyListener( std::shared_ptr<IKeyListener> listener );
+    void unregisterKeyListener( std::shared_ptr<IKeyListener> listener );
   };
 }
 #endif

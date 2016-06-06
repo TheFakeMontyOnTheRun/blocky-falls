@@ -9,6 +9,7 @@
 namespace BlockyFalls {
   
     void CLevel::addRandomColumn() {
+        std::cout << "adding random column" << std::endl;
         mColumns.push_back( std::make_shared<CColumn>());
     }
   
@@ -31,8 +32,52 @@ namespace BlockyFalls {
         return CColumn::EColour::eNothing;
     }
     
+    bool CLevel::canBreakAt( int x, int y ) {
+        return colourAt( x, y )  != CColumn::EColour::eNothing && ( 
+            colourAt( x, y ) == colourAt( x + 1, y) ||
+            colourAt( x, y ) == colourAt( x - 1, y) ||
+            colourAt( x, y ) == colourAt( x, y + 1) ||
+            colourAt( x, y ) == colourAt( x, y - 1)
+        );
+    }
+    
+    void CLevel::propagate( int x, int y ) {
+        
+        if ( x >= mColumns.size() || x < 0 ) {
+            return;
+        }
+        
+        auto originalColour = colourAt( x, y ); 
+        
+        mColumns[ x ]->breakBlockAt( y );
+        
+        if ( originalColour == colourAt( x + 1, y) ) {
+            propagate( x + 1, y );        
+        }
+            
+        if ( originalColour == colourAt( x - 1, y) ) {
+            propagate( x - 1, y );
+        }
+            
+        if ( originalColour == colourAt( x, y + 1) ) {
+            propagate( x, y + 1);    
+        }
+            
+        if ( originalColour == colourAt( x, y - 1)  ) {
+            propagate( x, y - 1);
+        }
+
+        
+    }
+    
     void CLevel::breakBlockAt( std::pair<int, int> position ) {        
-        mColumns[ position.first ]->breakBlockAt( position.second );
+        int x = position.first;
+        int y = position.second;
+        auto colour = colourAt( x, y );
+        
+        if ( canBreakAt( x, y ) ) {
+            propagate( x, y );
+        }
     }
     
     bool isGameOver() {

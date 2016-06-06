@@ -13,6 +13,8 @@ namespace BlockyFalls {
     bool isLevelCompleted();
     void breakBlockAt( std::pair<int, int> position );
     void addRandomColumn();
+    bool canBreakAt( int x, int y );
+    void propagate( int x, int y );
   private:
     std::vector<std::shared_ptr<CColumn>> mColumns;
   };
