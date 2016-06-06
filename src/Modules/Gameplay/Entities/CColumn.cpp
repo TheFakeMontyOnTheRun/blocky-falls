@@ -22,6 +22,16 @@ namespace BlockyFalls {
       return mBlocks[ index ];
     }
     
+    bool CColumn::isEmpty() {
+        for ( auto& brick : mBlocks ) {
+            if ( brick != EColour::eNothing ) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     void CColumn::breakBlockAt( int index ) {
         if ( index >= mBlocks.size() ) {
             return;

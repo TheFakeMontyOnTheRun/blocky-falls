@@ -15,6 +15,7 @@ namespace BlockyFalls {
     void addRandomColumn();
     bool canBreakAt( int x, int y );
     void propagate( int x, int y );
+    void collapseEmptyColumns();
   private:
     std::vector<std::shared_ptr<CColumn>> mColumns;
   };

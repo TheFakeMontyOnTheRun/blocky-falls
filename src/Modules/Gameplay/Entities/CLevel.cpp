@@ -9,7 +9,9 @@
 namespace BlockyFalls {
   
     void CLevel::addRandomColumn() {
-        mColumns.insert( mColumns.begin(), std::make_shared<CColumn>());
+        
+        auto column = std::make_shared<CColumn>();
+        mColumns.insert( mColumns.begin(), column );
     }
   
     CLevel::CLevel( int initialColumns ) {
@@ -65,8 +67,17 @@ namespace BlockyFalls {
         if ( originalColour == colourAt( x, y - 1)  ) {
             propagate( x, y - 1);
         }
-
+    }
+    
+    void CLevel::collapseEmptyColumns() {
+        auto it = mColumns.begin();
         
+        while( it != mColumns.end() ) {
+            if ( (*it)->isEmpty() ) {
+                mColumns.erase( it );
+            }    
+            ++it;
+        }
     }
     
     void CLevel::breakBlockAt( std::pair<int, int> position ) {        
@@ -77,6 +88,8 @@ namespace BlockyFalls {
         if ( canBreakAt( x, y ) ) {
             propagate( x, y );
         }
+        
+        collapseEmptyColumns();
     }
     
     bool isGameOver() {

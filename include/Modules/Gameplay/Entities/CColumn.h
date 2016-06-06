@@ -12,6 +12,8 @@ namespace BlockyFalls {
     EColour colourAt( int index );
     void breakBlockAt( int index );
     EColour getRandomPiece();
+    bool isEmpty();
+    
   private:
     std::vector<EColour> mBlocks;
   };
