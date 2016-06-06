@@ -10,8 +10,8 @@ namespace BlockyFalls {
     
     void showPullAnimation();
     void showBlocksExplosionAt( std::vector<std::pair<int, int>> positions );
-    void drawBlockAt( std::tuple<int, int, CLevel::EColour> block );
-    void animateBlockFalling( std::tuple<int, int, CLevel::EColour> block, std::pair<int, int> position);
+    void drawBlockAt( std::tuple<int, int, CColumn::EColour> block );
+    void animateBlockFalling( std::tuple<int, int, CColumn::EColour> block, std::pair<int, int> position);
     void drawScoreGain(int gain);
     void playVanishSound();
     void playFallSound();

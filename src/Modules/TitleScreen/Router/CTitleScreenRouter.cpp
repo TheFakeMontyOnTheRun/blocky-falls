@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Vipper/Vipper.h"
 
+#include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
 #include "Modules/Gameplay/Entities/CGameSession.h"
 

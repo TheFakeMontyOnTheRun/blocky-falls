@@ -3,6 +3,7 @@
 
 #include "Router/CGameplayRouter.h"
 #include "Interactor/CGameplayInteractor.h"
+#include "Entities/CColumn.h"
 #include "Entities/CLevel.h"
 #include "Entities/CGameSession.h"
 #include "View/CGameplayView.h"

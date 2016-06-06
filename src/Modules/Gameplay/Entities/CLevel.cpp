@@ -3,44 +3,36 @@
 #include <random>
 
 #include "Vipper/Vipper.h"
+#include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
 
 namespace BlockyFalls {
   
-    CLevel::EColour CLevel::getRandomPiece() {
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        static std::uniform_int_distribution<> dis(0, 3);
-        
-        enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing};
-        
-        static CLevel::EColour values[]{ CLevel::EColour::eRed, CLevel::EColour::eYellow, CLevel::EColour::eGrey, CLevel::EColour::eBlue};
-
-      return values[ dis(gen) ];
+    void CLevel::addRandomColumn() {
+        mColumns.push_back( std::make_shared<CColumn>());
     }
   
-    CLevel::CLevel() {
-      for ( int y = 0; y < kColumnHeight; ++y ) {
-        for ( int x = 0; x < kNumberOfColumns; ++x ) {
-          map[ y ][ x ] = getRandomPiece();
+    CLevel::CLevel( int initialColumns ) {
+        for ( int x = 0; x <= initialColumns; ++x ) {
+            addRandomColumn();
         }
-      }
     }
     
-    CLevel::EColour CLevel::colourAt( int x, int y ) {
+    CColumn::EColour CLevel::colourAt( int x, int y ) {
       
-      if ( x < 0 || y < 0 || y > kColumnHeight || x > kNumberOfColumns ) {
-        return CLevel::EColour::eNothing;
-      }
+        if ( x >= 0 && x < mColumns.size() ) {
+            auto column = mColumns[ x ];
       
-      return map[ y ][ x ];
+            if ( y >= 0 && y < CColumn::kColumnHeight ) {
+                return column->colourAt( y );
+            }  
+        }
+      
+        return CColumn::EColour::eNothing;
     }
     
-    void CLevel::breakBlockAt( std::pair<int, int> position ) {
-        
-        int x = position.first / 64;
-        int y = position.second / 64;        
-        map[ y ][ x ] = CLevel::EColour::eNothing;
+    void CLevel::breakBlockAt( std::pair<int, int> position ) {        
+        mColumns[ position.first ]->breakBlockAt( position.second );
     }
     
     bool isGameOver() {

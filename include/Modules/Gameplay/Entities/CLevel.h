@@ -1,22 +1,20 @@
-#ifndef BF_CLevel_H
-#define BF_CLevel_H
+#ifndef BF_CLEVEL_H
+#define BF_CLEVEL_H
 
 namespace BlockyFalls {
   class CLevel : public Vipper::IEntity {
 
   public:
-    static const int kColumnHeight = 20;
     static const int kNumberOfColumns = 20;
 
-    enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing};
-    explicit CLevel();
-    EColour colourAt( int x, int y );
+    explicit CLevel( int initialColumns );
+    CColumn::EColour colourAt( int x, int y );
     bool isGameOver();
     bool isLevelCompleted();
     void breakBlockAt( std::pair<int, int> position );
-    EColour getRandomPiece();
+    void addRandomColumn();
   private:
-    EColour map[ kColumnHeight ][ kNumberOfColumns ];
+    std::vector<std::shared_ptr<CColumn>> mColumns;
   };
 }
 #endif

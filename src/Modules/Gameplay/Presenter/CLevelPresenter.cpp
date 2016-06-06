@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "Vipper/Vipper.h"
+#include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
 #include "Modules/Gameplay/Presenter/CLevelPresenter.h"
 
@@ -16,10 +17,10 @@ namespace BlockyFalls {
     void CLevelPresenter::showBlocksExplosionAt( std::vector<std::pair<int, int>> positions ) {
     }
     
-    void CLevelPresenter::drawBlockAt( std::tuple<int, int, CLevel::EColour> block ) {
+    void CLevelPresenter::drawBlockAt( std::tuple<int, int, CColumn::EColour> block ) {
     }
     
-    void CLevelPresenter::animateBlockFalling( std::tuple<int, int, CLevel::EColour> block, std::pair<int, int> position) {
+    void CLevelPresenter::animateBlockFalling( std::tuple<int, int, CColumn::EColour> block, std::pair<int, int> position) {
     }
     
     void CLevelPresenter::drawScoreGain(int gain) {

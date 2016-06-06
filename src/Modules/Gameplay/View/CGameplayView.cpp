@@ -2,27 +2,28 @@
 #include <map>
 #include <string>
 #include "Vipper/Vipper.h"
+#include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
 #include "Modules/Gameplay/Entities/CGameSession.h"
 #include "Modules/Gameplay/View/CGameplayView.h"
 
 namespace BlockyFalls {
 	
-	std::map<CLevel::EColour, int> coloursForBlocks;
+	std::map<CColumn::EColour, int> coloursForBlocks;
 	
 	CGameplayView::CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer) : IView( renderer ), mGameSession( session ) {
 
 		
-		coloursForBlocks[ CLevel::EColour::eRed 	] = 0xFF0000;
-		coloursForBlocks[ CLevel::EColour::eYellow 	] = 0xFFFF00;
-		coloursForBlocks[ CLevel::EColour::eGrey	] = 0x999999;
-		coloursForBlocks[ CLevel::EColour::eBlue 	] = 0x0000FF;
-		coloursForBlocks[ CLevel::EColour::eNothing ] = 0x0;
+		coloursForBlocks[ CColumn::EColour::eRed 	] = 0xFF0000;
+		coloursForBlocks[ CColumn::EColour::eYellow ] = 0xFFFF00;
+		coloursForBlocks[ CColumn::EColour::eGrey	] = 0x999999;
+		coloursForBlocks[ CColumn::EColour::eBlue 	] = 0x0000FF;
+		coloursForBlocks[ CColumn::EColour::eNothing] = 0x00FF00;
 			
 		enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing};
 	}
 
-    void CGameplayView::drawSquareAt( std::tuple<int, int, CLevel::EColour> block ) {
+    void CGameplayView::drawSquareAt( std::tuple<int, int, CColumn::EColour> block ) {
 	}
 	
     void CGameplayView::drawTextAt( std::pair<int, int> position, std::string text ) {
@@ -44,7 +45,7 @@ namespace BlockyFalls {
 		auto level = mGameSession->getLevel();
 		
 		for ( int x = 0; x < CLevel::kNumberOfColumns; ++x ) {
-			for ( int y = 0; y < CLevel::kColumnHeight; ++y ) {
+			for ( int y = 0; y < CColumn::kColumnHeight; ++y ) {
 				auto piece = level->colourAt( x, y );
 				
 				auto colour = coloursForBlocks[ piece ];
@@ -55,8 +56,8 @@ namespace BlockyFalls {
 	}
 	
 	void CGameplayView::onClick( std::pair<int, int> position ) {
-		mLastClick = position;
-		
-		mGameSession->getLevel()->breakBlockAt( position );
+		mLastClick.first = position.first / 64;
+		mLastClick.second = position.second / 64;
+		mGameSession->getLevel()->breakBlockAt( mLastClick );
 	}
 }

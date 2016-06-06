@@ -9,7 +9,7 @@ namespace BlockyFalls {
   public:
     explicit CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer);
 
-    void drawSquareAt( std::tuple<int, int, CLevel::EColour> block );
+    void drawSquareAt( std::tuple<int, int, CColumn::EColour> block );
     void drawTextAt( std::pair<int, int> position, std::string text );
     void drawGaugeAt( std::pair<int, int> position, float howFilled);
     std::pair<int, int> getLastClick();
