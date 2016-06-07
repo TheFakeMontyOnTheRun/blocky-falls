@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <algorithm>
 #include <random>
 
 #include "Vipper/Vipper.h"
@@ -27,7 +27,7 @@ namespace BlockyFalls {
       
             if ( y >= 0 && y < CColumn::kColumnHeight ) {
                 return column->colourAt( y );
-            }  
+            }
         }
       
         return CColumn::EColour::eNothing;
@@ -48,8 +48,16 @@ namespace BlockyFalls {
             return;
         }
         
+        if ( y >= CColumn::kColumnHeight || y < 0 ) {
+            return;
+        }
+        
         auto originalColour = colourAt( x, y ); 
         
+        if ( originalColour == CColumn::EColour::eNothing ) {
+            return;
+        } 
+                
         mColumns[ x ]->breakBlockAt( y );
         
         if ( originalColour == colourAt( x + 1, y) ) {
@@ -69,15 +77,12 @@ namespace BlockyFalls {
         }
     }
     
-    void CLevel::collapseEmptyColumns() {
-        auto it = mColumns.begin();
+    void CLevel::collapseEmptyColumns() {     
+        static const auto predicate = [](std::shared_ptr<CColumn> c) {
+            return c->isEmpty();
+        };
         
-        while( it != mColumns.end() ) {
-            if ( (*it)->isEmpty() ) {
-                mColumns.erase( it );
-            }    
-            ++it;
-        }
+        mColumns.erase( std::remove_if( mColumns.begin(), mColumns.end(), predicate), mColumns.end() );
     }
     
     void CLevel::breakBlockAt( std::pair<int, int> position ) {        
@@ -90,6 +95,13 @@ namespace BlockyFalls {
         }
         
         collapseEmptyColumns();
+        dropBlocksAboveEmptySpaces();
+    }
+    
+    void CLevel::dropBlocksAboveEmptySpaces() {
+        for ( auto& column : mColumns ) {
+            column->dropBlocksAboveEmptySpaces();
+        }
     }
     
     bool isGameOver() {

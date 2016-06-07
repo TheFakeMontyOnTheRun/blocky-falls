@@ -50,7 +50,12 @@ namespace BlockyFalls {
 				
 				auto colour = coloursForBlocks[ piece ];
 				
-				renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
+				auto screenX0 = (x) * 64;
+				auto screenY0 = ( (y ) * 64 );
+				auto screenX1 = (x + 1) * 64;
+				auto screenY1 = ( (y + 1) * 64 );
+				
+				renderer->drawSquare( screenX0, screenY0, screenX1, screenY1, colour );
 			}
 		}
 	}

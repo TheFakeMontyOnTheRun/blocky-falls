@@ -15,11 +15,15 @@ namespace BlockyFalls {
     }
     
     CColumn::EColour CColumn::colourAt( int index ) {  
-      if ( index < 0 || index > kColumnHeight ) {
+      if ( index < 0 || index >= mBlocks.size() ) {
         return CColumn::EColour::eNothing;
       }
       
       return mBlocks[ index ];
+    }
+    
+    void CColumn::dropBlocksAboveEmptySpaces() {
+        mBlocks.erase( std::remove( mBlocks.begin(), mBlocks.end(), EColour::eNothing ), mBlocks.end() );
     }
     
     bool CColumn::isEmpty() {
@@ -33,11 +37,11 @@ namespace BlockyFalls {
     }
     
     void CColumn::breakBlockAt( int index ) {
-        if ( index >= mBlocks.size() ) {
+        if ( index >= mBlocks.size() || index < 0) {
             return;
         }
-        auto position =  (begin(mBlocks) + index);
-        *position = CColumn::EColour::eNothing;
+        
+        mBlocks[ index] = EColour::eNothing;
     }
     
     CColumn::EColour CColumn::getRandomPiece() {

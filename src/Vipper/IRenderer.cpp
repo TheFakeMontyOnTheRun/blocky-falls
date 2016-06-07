@@ -14,14 +14,7 @@ namespace Vipper {
 	}
 	
     void IRenderer::unregisterClickListener( std::shared_ptr<IClickListener> listener ) {
-		auto elementIterator = std::find( mClickListeners.begin(), mClickListeners.end(), listener );
-
-		//remove and erase is kinda ugly...
-		
-		if ( elementIterator != mClickListeners.end() ) {
-			std::swap( *elementIterator, mClickListeners.back() );
-			mClickListeners.pop_back();
-		}
+		mClickListeners.erase( std::remove( mClickListeners.begin(), mClickListeners.end(), listener ), mClickListeners.end() );
 	}
 	
 	void IRenderer::registerKeyListener( std::shared_ptr<IKeyListener> listener ) {
@@ -29,12 +22,7 @@ namespace Vipper {
 	}
 	
     void IRenderer::unregisterKeyListener( std::shared_ptr<IKeyListener> listener ) {
-		auto elementIterator = std::find( mKeyListeners.begin(), mKeyListeners.end(), listener );
-		
-		if ( elementIterator != mKeyListeners.end() ) {
-			std::swap( *elementIterator, mKeyListeners.back() );
-			mKeyListeners.pop_back();
-		}
+		mKeyListeners.erase( std::remove( mKeyListeners.begin(), mKeyListeners.end(), listener ), mKeyListeners.end() );		
 	}
 
 	void IRenderer::dispatchKeyToListeners( long keyCode ) {
