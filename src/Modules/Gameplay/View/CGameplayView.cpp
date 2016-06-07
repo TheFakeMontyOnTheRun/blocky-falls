@@ -46,7 +46,7 @@ namespace BlockyFalls {
 		
 		for ( int x = 0; x < CLevel::kNumberOfColumns; ++x ) {
 			for ( int y = 0; y < CColumn::kColumnHeight; ++y ) {
-				auto piece = level->colourAt( x, y );
+				auto piece = level->colourAt( x, CColumn::kColumnHeight - y - 1);
 				
 				auto colour = coloursForBlocks[ piece ];
 				
@@ -62,7 +62,7 @@ namespace BlockyFalls {
 	
 	void CGameplayView::onClick( std::pair<int, int> position ) {
 		mLastClick.first = position.first / 64;
-		mLastClick.second = position.second / 64;
+		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
 		mGameSession->getLevel()->breakBlockAt( mLastClick );
 	}
 	
