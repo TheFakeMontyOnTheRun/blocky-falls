@@ -9,8 +9,6 @@ namespace BlockyFalls {
 
     explicit CLevel( int initialColumns );
     CColumn::EColour colourAt( int x, int y );
-    bool isGameOver();
-    bool isLevelCompleted();
     void breakBlockAt( std::pair<int, int> position );
     void addRandomColumn();
     bool canBreakAt( int x, int y );

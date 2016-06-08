@@ -20,6 +20,8 @@ namespace BlockyFalls {
         }
     }
     
+    
+    
     CColumn::EColour CLevel::colourAt( int x, int y ) {
       
         if ( x >= 0 && x < mColumns.size() ) {
@@ -32,6 +34,13 @@ namespace BlockyFalls {
       
         return CColumn::EColour::eNothing;
     }
+    
+    
+    
+    
+    
+    
+    
     
     bool CLevel::canBreakAt( int x, int y ) {
         return colourAt( x, y )  != CColumn::EColour::eNothing && ( 
@@ -77,13 +86,6 @@ namespace BlockyFalls {
         }
     }
     
-    void CLevel::collapseEmptyColumns() {     
-        static const auto predicate = [](std::shared_ptr<CColumn> c) {
-            return c->isEmpty();
-        };
-        
-        mColumns.erase( std::remove_if( mColumns.begin(), mColumns.end(), predicate), mColumns.end() );
-    }
     
     void CLevel::breakBlockAt( std::pair<int, int> position ) {        
         int x = position.first;
@@ -98,17 +100,17 @@ namespace BlockyFalls {
         dropBlocksAboveEmptySpaces();
     }
     
+    void CLevel::collapseEmptyColumns() {     
+        static const auto predicate = [](std::shared_ptr<CColumn> c) {
+            return c->isEmpty();
+        };
+        
+        mColumns.erase( std::remove_if( mColumns.begin(), mColumns.end(), predicate), mColumns.end() );
+    }
+    
     void CLevel::dropBlocksAboveEmptySpaces() {
         for ( auto& column : mColumns ) {
             column->dropBlocksAboveEmptySpaces();
         }
-    }
-    
-    bool isGameOver() {
-      return false;
-    }
-    
-    bool isLevelCompleted() {
-      return false;
     }
 }
