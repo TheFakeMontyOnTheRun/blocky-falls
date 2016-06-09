@@ -1,6 +1,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <functional>
 #include "Vipper/Vipper.h"
 #include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
@@ -60,10 +61,33 @@ namespace BlockyFalls {
 		}
 	}
 	
+	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void()> onExplosionsFinished ) {
+		onExplosionsFinished();
+	}
+	
+	void CGameplayView::generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void()> onDropsFinished ) {
+		onDropsFinished();
+	}
+	
+	void CGameplayView::generateColumnCollapseAnimations( std::shared_ptr<CLevel> level, std::function<void()> onCollapseFinished ) {
+		onCollapseFinished();
+	}
+	
+	
 	void CGameplayView::onClick( std::pair<int, int> position ) {
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
+		
 		mGameSession->getLevel()->breakBlockAt( mLastClick );
+		
+		generateExplosions( mGameSession->getLevel(), [&](){
+			generateDropAnimations( mGameSession->getLevel(), [&] {
+				mGameSession->getLevel()->dropBlocksAboveEmptySpaces();
+				generateColumnCollapseAnimations( mGameSession->getLevel(), [&](){
+					mGameSession->getLevel()->collapseEmptyColumns();			
+				});
+			});	
+		});
 	}
 	
 	void CGameplayView::onKey( long keyCode ) {
