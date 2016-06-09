@@ -9,6 +9,9 @@ namespace BlockyFalls {
   public:
     explicit CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer);
 
+    void generateExplosions( std::shared_ptr<CLevel> level, std::function<void()> onExplosionsFinished );
+    void generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void()> onDropsFinished );
+    void generateColumnCollapseAnimations( std::shared_ptr<CLevel> level, std::function<void()> onCollapseFinished );
     void drawSquareAt( std::tuple<int, int, CColumn::EColour> block );
     void drawTextAt( std::pair<int, int> position, std::string text );
     void drawGaugeAt( std::pair<int, int> position, float howFilled);
