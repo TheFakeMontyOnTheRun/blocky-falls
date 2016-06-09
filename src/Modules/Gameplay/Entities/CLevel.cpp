@@ -95,9 +95,6 @@ namespace BlockyFalls {
         if ( canBreakAt( x, y ) ) {
             propagate( x, y );
         }
-        
-        collapseEmptyColumns();
-        dropBlocksAboveEmptySpaces();
     }
     
     void CLevel::collapseEmptyColumns() {     
