@@ -1,15 +1,20 @@
+#include <functional>
 #include <iostream>
 #include <map>
 #include <string>
 #include <functional>
+#include <algorithm>
 #include "Vipper/Vipper.h"
+#include "Vipper/CLerp.h"
+#include "Vipper/CAnimation.h"
 #include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
 #include "Modules/Gameplay/Entities/CGameSession.h"
 #include "Modules/Gameplay/View/CGameplayView.h"
+#include "Modules/Gameplay/View/CBlockAnimationHelper.h"
 
 namespace BlockyFalls {
-	
+	CBlockAnimationHelper animationHelper;
 	std::map<CColumn::EColour, int> coloursForBlocks;
 	
 	CGameplayView::CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer) : IView( renderer ), mGameSession( session ) {
@@ -40,6 +45,10 @@ namespace BlockyFalls {
     void CGameplayView::show() {
 		auto renderer = getRenderer();
 		
+		if (animationHelper.draw( renderer ) ) {
+			return;
+		}
+
 		renderer->drawSquare( 0, 0, 640, 480, 0 );
 		renderer->drawSquare( mLastClick.first, mLastClick.second, mLastClick.first + 50, mLastClick.second + 50, 0x0000FF );
 	
@@ -62,6 +71,8 @@ namespace BlockyFalls {
 	}
 	
 	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void()> onExplosionsFinished ) {
+		std::vector< std::pair< int, int > > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
+		animationHelper.vanishBlock( positions, onExplosionsFinished );
 		onExplosionsFinished();
 	}
 	
@@ -78,7 +89,13 @@ namespace BlockyFalls {
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
 		
-		mGameSession->getLevel()->breakBlockAt( mLastClick );
+	//isolar declaração dos lambdas
+	
+	
+	
+	//usar CAnimation - CLerp deve fazer uma coisa só.
+	
+	//Usar o helper ajuda também. Ele mantem registros
 		
 		generateExplosions( mGameSession->getLevel(), [&](){
 			generateDropAnimations( mGameSession->getLevel(), [&] {

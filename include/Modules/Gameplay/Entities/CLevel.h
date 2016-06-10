@@ -9,10 +9,10 @@ namespace BlockyFalls {
 
     explicit CLevel( int initialColumns );
     CColumn::EColour colourAt( int x, int y );
-    void breakBlockAt( std::pair<int, int> position );
+    std::vector<std::pair<int, int>> breakBlockAt( std::pair<int, int> position );
     void addRandomColumn();
     bool canBreakAt( int x, int y );
-    void propagate( int x, int y );
+    std::vector<std::pair<int, int>> propagate( int x, int y );
     void collapseEmptyColumns();
     void dropBlocksAboveEmptySpaces();
   private:
