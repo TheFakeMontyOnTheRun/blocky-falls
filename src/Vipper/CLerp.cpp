@@ -6,7 +6,7 @@ namespace Vipper {
 	mInitialValue( initialValue ), mDelta( finalValue - initialValue ), mDuration( duration ) {
 	}
 	
-	long CLerp::getValue( long ellapsed ) {
+	float CLerp::getValue( long ellapsed ) {
 		return mInitialValue + std::min( ( ( mDelta * ellapsed ) / mDuration ), mDelta ); 
 	}
 }

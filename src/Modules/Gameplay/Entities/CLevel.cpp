@@ -20,8 +20,6 @@ namespace BlockyFalls {
         }
     }
     
-    
-    
     CColumn::EColour CLevel::colourAt( int x, int y ) {
       
         if ( x >= 0 && x < mColumns.size() ) {
@@ -34,13 +32,6 @@ namespace BlockyFalls {
       
         return CColumn::EColour::eNothing;
     }
-    
-    
-    
-    
-    
-    
-    
     
     bool CLevel::canBreakAt( int x, int y ) {
         return colourAt( x, y )  != CColumn::EColour::eNothing && ( 
@@ -118,9 +109,15 @@ namespace BlockyFalls {
         mColumns.erase( std::remove_if( mColumns.begin(), mColumns.end(), predicate), mColumns.end() );
     }
     
-    void CLevel::dropBlocksAboveEmptySpaces() {
+    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CLevel::dropBlocksAboveEmptySpaces() {
+        std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> paths;
+
         for ( auto& column : mColumns ) {
-            column->dropBlocksAboveEmptySpaces();
+
+            auto toAdd = column->dropBlocksAboveEmptySpaces();
+            paths.insert( paths.end(), toAdd.begin(), toAdd.end() );
         }
+
+        return paths;
     }
 }

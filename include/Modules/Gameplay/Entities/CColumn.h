@@ -13,7 +13,7 @@ namespace BlockyFalls {
     void breakBlockAt( int index );
     EColour getRandomPiece();
     bool isEmpty();
-    void dropBlocksAboveEmptySpaces();;
+    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> dropBlocksAboveEmptySpaces();;
   private:
     std::vector<EColour> mBlocks;
   };

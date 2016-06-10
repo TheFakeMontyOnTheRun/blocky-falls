@@ -73,11 +73,12 @@ namespace BlockyFalls {
 	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void()> onExplosionsFinished ) {
 		std::vector< std::pair< int, int > > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
 		animationHelper.vanishBlock( positions, onExplosionsFinished );
-		onExplosionsFinished();
+		// onExplosionsFinished();
 	}
 	
 	void CGameplayView::generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void()> onDropsFinished ) {
-		onDropsFinished();
+		auto positions = mGameSession->getLevel()->dropBlocksAboveEmptySpaces();
+		animationHelper.animateFallingBlocks( positions, onDropsFinished );
 	}
 	
 	void CGameplayView::generateColumnCollapseAnimations( std::shared_ptr<CLevel> level, std::function<void()> onCollapseFinished ) {
@@ -88,18 +89,9 @@ namespace BlockyFalls {
 	void CGameplayView::onClick( std::pair<int, int> position ) {
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
-		
-	//isolar declaração dos lambdas
-	
-	
-	
-	//usar CAnimation - CLerp deve fazer uma coisa só.
-	
-	//Usar o helper ajuda também. Ele mantem registros
-		
+				
 		generateExplosions( mGameSession->getLevel(), [&](){
 			generateDropAnimations( mGameSession->getLevel(), [&] {
-				mGameSession->getLevel()->dropBlocksAboveEmptySpaces();
 				generateColumnCollapseAnimations( mGameSession->getLevel(), [&](){
 					mGameSession->getLevel()->collapseEmptyColumns();			
 				});
