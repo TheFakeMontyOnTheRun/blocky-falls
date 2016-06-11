@@ -111,7 +111,7 @@ namespace BlockyFalls {
                 continue;
               }
               std::cout << "returning " << animation->mMovement.first << ", " << c << std::endl;
-              animation->mOnEnded( std::pair<int,int>( animation->mMovement.first, c ) );
+              animation->mOnEnded( std::pair<int,int>( animation->mMovement.first, CColumn::kColumnHeight - c - 1 ) );
           }
         }
         

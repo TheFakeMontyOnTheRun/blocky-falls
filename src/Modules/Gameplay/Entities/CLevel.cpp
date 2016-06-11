@@ -14,11 +14,11 @@ namespace BlockyFalls {
         auto column = std::make_shared<CColumn>();
         mColumns.insert( mColumns.begin(), column );
 
-        if ( mColumns.size() % 2 == 0 ) {
-            for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
-                mColumns[ 1 ]->mBlocks[ c ] = CColumn::EColour::eRed;
-            }
-        }
+        // if ( mColumns.size() % 2 == 0 ) {
+        //     for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
+        //         mColumns[ 1 ]->mBlocks[ c ] = CColumn::EColour::eRed;
+        //     }
+        // }
     }
   
     CLevel::CLevel( int initialColumns ) {

@@ -62,11 +62,17 @@ namespace BlockyFalls {
 				positions.insert( std::pair<int,int>(x, CColumn::kColumnHeight - y - 1 ));
 			}
 		}
-
+		
+		if ( exclusionList.size() > 0 ) {
+			std::cout << std::endl << "ignoring: ";
+		}
+		
+		
 		for ( auto& position : positions ) {
 
 			if ( exclusionList.find( position ) != exclusionList.end() ) {
-				continue;
+				std::cout << "; " << position.first << ", " << position.second;
+				// continue;
 			}
 
 			int x = position.first;
@@ -74,7 +80,7 @@ namespace BlockyFalls {
 			auto piece = level->colourAt( x, CColumn::kColumnHeight - y - 1);
 				
 			auto colour = ( exclusionList.find( position ) != exclusionList.end() ) ?  coloursForBlocks[ CColumn::EColour::eSpecial ] : coloursForBlocks[ piece ];
-				
+
 			auto screenX0 = (x) * 64;
 			auto screenY0 = ( (y ) * 64 );
 			auto screenX1 = (x + 1) * 64;
@@ -127,7 +133,7 @@ namespace BlockyFalls {
 
 				std::cout << "pushing " << block.first << ", " << block.second << std::endl;
 				column.push_back( colour  );
-				exclusionList.insert( block );
+				exclusionList.insert( std::pair<int, int>( block.first, CColumn::kColumnHeight - c - 1 ) );
 				// onCollapseFinished( block );
 			}
 
