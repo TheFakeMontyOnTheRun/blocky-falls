@@ -15,16 +15,15 @@
 
 namespace BlockyFalls {
 	CBlockAnimationHelper animationHelper;
-	std::map<CColumn::EColour, int> coloursForBlocks;
 	
 	CGameplayView::CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer) : IView( renderer ), mGameSession( session ) {
 
-		
 		coloursForBlocks[ CColumn::EColour::eRed 	] = 0xFF0000;
 		coloursForBlocks[ CColumn::EColour::eYellow ] = 0xFFFF00;
 		coloursForBlocks[ CColumn::EColour::eGrey	] = 0x999999;
 		coloursForBlocks[ CColumn::EColour::eBlue 	] = 0x0000FF;
 		coloursForBlocks[ CColumn::EColour::eNothing] = 0x00FF00;
+		
 			
 		enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing};
 	}
@@ -71,12 +70,13 @@ namespace BlockyFalls {
 	}
 	
 	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void()> onExplosionsFinished ) {
+		std::cout << "generating explosions" << std::endl;
 		std::vector< std::pair< int, int > > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
 		animationHelper.vanishBlock( positions, onExplosionsFinished );
-		// onExplosionsFinished();
 	}
 	
 	void CGameplayView::generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void()> onDropsFinished ) {
+		std::cout << "generating drop animations" << std::endl;
 		auto positions = mGameSession->getLevel()->dropBlocksAboveEmptySpaces();
 		animationHelper.animateFallingBlocks( positions, onDropsFinished );
 	}

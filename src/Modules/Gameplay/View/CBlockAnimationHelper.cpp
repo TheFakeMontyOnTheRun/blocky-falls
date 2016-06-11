@@ -1,3 +1,4 @@
+#include <map>
 #include <vector>
 #include <memory>
 #include <utility>
@@ -14,7 +15,8 @@ namespace BlockyFalls {
   }
 
     
-  CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void()> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 ), ellapsed( 0 ), mOnEnded(onEnded ) {
+  CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void()> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 * ( to.second - from.second ) ), ellapsed( 0 ), mOnEnded(onEnded ), mColour( colour ) {
+  std::cout << "animating for " << ( to.second - from.second ) << std::endl;
   }
     
     
@@ -36,16 +38,17 @@ namespace BlockyFalls {
   bool CBlockAnimationHelper::draw( std::shared_ptr<Vipper::IRenderer> renderer) {
 
       bool toReturn = false;
-      
+      std::cout << "draw============" << std::endl;
       for ( auto& fall : mFallingAnimations ) {
         toReturn = true;
         fall->ellapsed += 33;
         float dx = fall->lerpX.getValue( fall->ellapsed );
         float dy = fall->lerpY.getValue( fall->ellapsed );
-        float x = fall->mPosition.first + dx;
-        float y = fall->mPosition.second + dy;
-         
-        renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, 0x0 );        
+        float x = dx;
+        float y = dy;
+        
+        std::cout << "falling " << y << std::endl;
+        renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, 0xFFFFFF);//coloursForBlocks[fall->mColour] );        
       }
       
       for ( auto& vanish : mVanishingAnimations ) {
@@ -54,25 +57,26 @@ namespace BlockyFalls {
         int y = vanish->mPosition.second;
         vanish->ellapsed += 33;
         auto colour = vanish->lerp.getValue( vanish->ellapsed );
+        std::cout << "vanishing " << colour << std::endl;
         renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
       }
       
       
-      mFallingAnimations.erase( std::remove_if(mFallingAnimations.begin(), mFallingAnimations.end(), [](std::shared_ptr<FallingBlockAnimation> animation ){
+      mFallingAnimations.erase( std::remove_if(mFallingAnimations.begin(), mFallingAnimations.end(), [&](std::shared_ptr<FallingBlockAnimation> animation ){
         
-        bool toReturn = (animation->ellapsed > 500); 
+        bool toReturn = (animation->ellapsed > animation->lerpY.mDuration); 
         
-        if ( animation->mOnEnded != nullptr ) {
+        if ( animation->mOnEnded != nullptr && toReturn ) {
           animation->mOnEnded();
         }
         
         return toReturn;
       }), mFallingAnimations.end() );
    
-      mVanishingAnimations.erase( std::remove_if(mVanishingAnimations.begin(), mVanishingAnimations.end(), [](std::shared_ptr<VanishingBlockAnimation> animation ){
-        bool toReturn = (animation->ellapsed > 1000); 
+      mVanishingAnimations.erase( std::remove_if(mVanishingAnimations.begin(), mVanishingAnimations.end(), [&](std::shared_ptr<VanishingBlockAnimation> animation ){
+        bool toReturn = (animation->ellapsed > animation->lerp.mDuration); 
         
-        if ( animation->mOnEnded != nullptr ) {
+        if ( animation->mOnEnded != nullptr && toReturn ) {
           animation->mOnEnded();
         }
         

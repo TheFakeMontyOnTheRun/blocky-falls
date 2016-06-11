@@ -112,9 +112,9 @@ namespace BlockyFalls {
     std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CLevel::dropBlocksAboveEmptySpaces() {
         std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> paths;
 
+        int x = 0;
         for ( auto& column : mColumns ) {
-
-            auto toAdd = column->dropBlocksAboveEmptySpaces();
+            auto toAdd = column->dropBlocksAboveEmptySpaces( x++ );
             paths.insert( paths.end(), toAdd.begin(), toAdd.end() );
         }
 

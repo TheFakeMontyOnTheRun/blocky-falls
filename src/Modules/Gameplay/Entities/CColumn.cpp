@@ -21,14 +21,40 @@ namespace BlockyFalls {
       
       return mBlocks[ index ];
     }
+
+    std::pair<int, int> transformPosition( std::pair<int, int> pos ) {
+        return std::pair<int, int>( pos.first, CColumn::kColumnHeight - pos.second - 1);
+    }
     
-    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CColumn::dropBlocksAboveEmptySpaces() {
+    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CColumn::dropBlocksAboveEmptySpaces(int xPos) {
+        
         std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> toReturn;
+        size_t size = mBlocks.size();
+        int solidBlocks = 0;
+        int emptyBlocks = 0;
+        int position = 0;
+        for ( auto& block : mBlocks ) {
+
+            if ( block == CColumn::EColour::eNothing ) {
+                emptyBlocks++;
+            } else {
+                solidBlocks++;
+
+                if ( emptyBlocks > 0 ) {
+                    auto from = transformPosition( std::pair<int,int>( xPos, position ) );
+                    auto to = transformPosition( std::pair<int, int>(xPos, solidBlocks - 1 ) );
+                    auto path = std::tuple< std::pair<int,int>, std::pair<int, int>, CColumn::EColour >( from, to, CColumn::EColour::eRed );
+                    
+                    std::cout << "dropping from " << xPos << ", " << position << " to " << solidBlocks - 1<< std::endl; 
+
+                    toReturn.push_back(  path );
+                }                
+            }
+
+            ++position;            
+        }
+    
         mBlocks.erase( std::remove( mBlocks.begin(), mBlocks.end(), EColour::eNothing ), mBlocks.end() );
-        auto from = std::pair<int,int>( 2, 0 );
-        auto to = std::pair<int, int>(2, 6 );
-        auto path = std::tuple< std::pair<int,int>, std::pair<int, int>, CColumn::EColour >( from, to, CColumn::EColour::eRed );
-        toReturn.push_back(  path ); 
 
         return toReturn;
     }

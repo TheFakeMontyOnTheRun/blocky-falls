@@ -2,6 +2,9 @@
 #define BF_CCOLUMNVIEW_H
 
 namespace BlockyFalls {
+
+	static std::map<CColumn::EColour, int> coloursForBlocks;
+
   class CBlockAnimationHelper {
     public:
     
@@ -23,6 +26,7 @@ namespace BlockyFalls {
       long ellapsed;
       std::pair< int, int > mPosition;
       std::function<void()> mOnEnded;
+      CColumn::EColour mColour;
             
       FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void()> onEnded);
     };
