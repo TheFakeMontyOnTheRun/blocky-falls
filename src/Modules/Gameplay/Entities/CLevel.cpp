@@ -109,15 +109,20 @@ namespace BlockyFalls {
         mColumns.erase( std::remove_if( mColumns.begin(), mColumns.end(), predicate), mColumns.end() );
     }
     
-    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CLevel::dropBlocksAboveEmptySpaces() {
+    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CLevel::getDropList() {
         std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> paths;
 
         int x = 0;
         for ( auto& column : mColumns ) {
-            auto toAdd = column->dropBlocksAboveEmptySpaces( x++ );
+            auto toAdd = column->getDropList( x++ );
             paths.insert( paths.end(), toAdd.begin(), toAdd.end() );
         }
 
         return paths;
     }
+
+    void CLevel::dropBlocksAboveEmptySpaces( int column ) {
+        mColumns[ column ] ->dropBlocksAboveEmptySpaces();
+    }
+    
 }

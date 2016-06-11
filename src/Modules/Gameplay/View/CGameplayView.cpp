@@ -1,5 +1,8 @@
+#include <iostream>
+
 #include <functional>
 #include <map>
+#include <set>
 #include <string>
 #include <functional>
 #include <algorithm>
@@ -24,7 +27,8 @@ namespace BlockyFalls {
 		coloursForBlocks[ CColumn::EColour::eYellow ] = 0xFFFF00;
 		coloursForBlocks[ CColumn::EColour::eGrey	] = 0x999999;
 		coloursForBlocks[ CColumn::EColour::eBlue 	] = 0x0000FF;
-		coloursForBlocks[ CColumn::EColour::eNothing] = 0x00FF00;
+		coloursForBlocks[ CColumn::EColour::eNothing] = 0x000000;
+		coloursForBlocks[ CColumn::EColour::eSpecial] = 0x00FFFF;
 		
 			
 		enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing};
@@ -48,23 +52,35 @@ namespace BlockyFalls {
 		
 
 		renderer->drawSquare( 0, 0, 640, 480, 0 );
-		renderer->drawSquare( mLastClick.first, mLastClick.second, mLastClick.first + 50, mLastClick.second + 50, 0x0000FF );
 	
 		auto level = mGameSession->getLevel();
 		
+		std::set<std::pair<int,int>> positions;
+
 		for ( int x = 0; x < CLevel::kNumberOfColumns; ++x ) {
 			for ( int y = 0; y < CColumn::kColumnHeight; ++y ) {
-				auto piece = level->colourAt( x, CColumn::kColumnHeight - y - 1);
-				
-				auto colour = coloursForBlocks[ piece ];
-				
-				auto screenX0 = (x) * 64;
-				auto screenY0 = ( (y ) * 64 );
-				auto screenX1 = (x + 1) * 64;
-				auto screenY1 = ( (y + 1) * 64 );
-				
-				renderer->drawSquare( screenX0, screenY0, screenX1, screenY1, colour );
+				positions.insert( std::pair<int,int>(x, CColumn::kColumnHeight - y - 1 ));
 			}
+		}
+
+		for ( auto& position : positions ) {
+
+			if ( exclusionList.find( position ) != exclusionList.end() ) {
+				continue;
+			}
+
+			int x = position.first;
+			int y = position.second;
+			auto piece = level->colourAt( x, CColumn::kColumnHeight - y - 1);
+				
+			auto colour = ( exclusionList.find( position ) != exclusionList.end() ) ?  coloursForBlocks[ CColumn::EColour::eSpecial ] : coloursForBlocks[ piece ];
+				
+			auto screenX0 = (x) * 64;
+			auto screenY0 = ( (y ) * 64 );
+			auto screenX1 = (x + 1) * 64;
+			auto screenY1 = ( (y + 1) * 64 );
+				
+			renderer->drawSquare( screenX0, screenY0, screenX1, screenY1, colour );
 		}
 
 		if (animationHelper.draw( renderer ) ) {
@@ -72,13 +88,19 @@ namespace BlockyFalls {
 		}		
 	}
 	
-	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void()> onExplosionsFinished ) {
+	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onExplosionsFinished ) {
 		std::vector< std::pair< int, int > > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
 		animationHelper.vanishBlock( positions, onExplosionsFinished );
 	}
 	
-	void CGameplayView::generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void()> onDropsFinished ) {
-		auto positions = mGameSession->getLevel()->dropBlocksAboveEmptySpaces();
+	void CGameplayView::generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onDropsFinished ) {
+		auto positions = mGameSession->getLevel()->getDropList();
+
+		for ( auto& path : positions ) {
+			auto origin = std::get<0>(path);
+			exclusionList.insert( origin );
+		}
+
 		animationHelper.animateFallingBlocks( positions, onDropsFinished );
 	}
 	
@@ -91,11 +113,20 @@ namespace BlockyFalls {
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
 				
-		generateExplosions( mGameSession->getLevel(), [&](){
-			generateDropAnimations( mGameSession->getLevel(), [&] {
-				generateColumnCollapseAnimations( mGameSession->getLevel(), [&](){
-					mGameSession->getLevel()->collapseEmptyColumns();			
-				});
+		generateExplosions( mGameSession->getLevel(), [&]( std::pair<int, int> origin ){
+
+
+
+			generateDropAnimations( mGameSession->getLevel(), [&]( std::pair<int, int> origin) {
+
+				exclusionList.erase( origin );
+				mGameSession->getLevel()->dropBlocksAboveEmptySpaces( origin.first );
+
+				if ( exclusionList.size() == 0 ) {
+					generateColumnCollapseAnimations( mGameSession->getLevel(), [&](){
+						mGameSession->getLevel()->collapseEmptyColumns();	
+					});
+				}
 			});	
 		});
 	}

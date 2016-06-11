@@ -26,7 +26,7 @@ namespace BlockyFalls {
         return std::pair<int, int>( pos.first, CColumn::kColumnHeight - pos.second - 1);
     }
     
-    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CColumn::dropBlocksAboveEmptySpaces(int xPos) {
+    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CColumn::getDropList(int xPos) {
         
         std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> toReturn;
         size_t size = mBlocks.size();
@@ -50,11 +50,14 @@ namespace BlockyFalls {
 
             ++position;            
         }
-    
-        mBlocks.erase( std::remove( mBlocks.begin(), mBlocks.end(), EColour::eNothing ), mBlocks.end() );
-
         return toReturn;
     }
+
+    void CColumn::dropBlocksAboveEmptySpaces() {
+        mBlocks.erase( std::remove( mBlocks.begin(), mBlocks.end(), EColour::eNothing ), mBlocks.end() );
+    }
+
+
     
     bool CColumn::isEmpty() {
         for ( auto& brick : mBlocks ) {

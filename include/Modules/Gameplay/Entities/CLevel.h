@@ -14,7 +14,8 @@ namespace BlockyFalls {
     bool canBreakAt( int x, int y );
     std::vector<std::pair<int, int>> propagate( int x, int y );
     void collapseEmptyColumns();
-    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> dropBlocksAboveEmptySpaces();
+    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> getDropList();
+    void dropBlocksAboveEmptySpaces( int column );
   private:
     std::vector<std::shared_ptr<CColumn>> mColumns;
   };

@@ -1,3 +1,5 @@
+#include <set>
+#include <tuple>
 #include <map>
 #include <vector>
 #include <memory>
@@ -13,15 +15,15 @@ namespace BlockyFalls {
 
   std::map<CColumn::EColour, int> colorsForBlocks;
 
-  CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > position, std::function<void()> onEnded) : mPosition( position ), lerp( 0, 255, 1000 ), ellapsed( 0 ), mOnEnded( onEnded ) {
+  CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > position, std::function<void(std::pair<int, int>)> onEnded) : mPosition( position ), lerp( 0, 255, 1000 ), ellapsed( 0 ), mOnEnded( onEnded ) {
   }
 
     
-  CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void()> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 * ( to.second - from.second ) ), ellapsed( 0 ), mOnEnded(onEnded ), mColour( colour ) {
+  CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 * ( to.second - from.second ) ), ellapsed( 0 ), mOnEnded(onEnded ), mColour( colour ) {
   }
     
     
-  void CBlockAnimationHelper::animateFallingBlocks( std::vector<std::tuple< std::pair<int, int>, std::pair<int, int>, CColumn::EColour>> paths, std::function<void()> onEnded ) {
+  void CBlockAnimationHelper::animateFallingBlocks( std::vector<std::tuple< std::pair<int, int>, std::pair<int, int>, CColumn::EColour>> paths, std::function<void(std::pair<int,int>)> onEnded ) {
     for ( auto& path : paths ) {
       auto from = std::get<0>(path);
       auto to = std::get<1>(path);
@@ -30,7 +32,7 @@ namespace BlockyFalls {
     }
   }
     
-  void CBlockAnimationHelper::vanishBlock( std::vector<std::pair< int, int >> position, std::function<void()> onEnded) {
+  void CBlockAnimationHelper::vanishBlock( std::vector<std::pair< int, int >> position, std::function<void(std::pair<int,int>)> onEnded) {
     for ( auto& pair : position ) {
       mVanishingAnimations.push_back( std::make_shared<VanishingBlockAnimation>(pair, onEnded));
     }
@@ -62,7 +64,7 @@ namespace BlockyFalls {
         int x = vanish->mPosition.first;
         int y = vanish->mPosition.second;
         vanish->ellapsed += 33;
-        auto colour = vanish->lerp.getValue( vanish->ellapsed );
+        auto colour = ( 255 - ( (int) vanish->lerp.getValue( vanish->ellapsed ) ) ) << 8;
         renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
       }
       
@@ -72,7 +74,7 @@ namespace BlockyFalls {
         bool toReturn = (animation->ellapsed > animation->lerpY.mDuration); 
         
         if ( animation->mOnEnded != nullptr && toReturn ) {
-          animation->mOnEnded();
+          animation->mOnEnded( animation->mPosition );
         }
         
         return toReturn;
@@ -82,7 +84,7 @@ namespace BlockyFalls {
         bool toReturn = (animation->ellapsed > animation->lerp.mDuration); 
         
         if ( animation->mOnEnded != nullptr && toReturn ) {
-          animation->mOnEnded();
+          animation->mOnEnded( animation->mPosition );
         }
         
         return toReturn;
