@@ -26,7 +26,8 @@ namespace BlockyFalls {
 
 
   CBlockAnimationHelper::MoveColumnAnimation::MoveColumnAnimation(std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded):
-  mColumn(column), ellapsed( 0 ), lerpX( movement.second, movement.first, 500 * ( movement.first - movement.second ) ) , mMovement( movement ), mOnEnded( onEnded ) {
+  mColumn(column), ellapsed( 0 ), lerpX( movement.second, movement.first, 5000 * ( movement.first - movement.second ) ) , mMovement( movement ), mOnEnded( onEnded ) {
+    std::cout << "duration: " << lerpX.mDuration << std::endl;
   } 
   
 
@@ -64,15 +65,17 @@ namespace BlockyFalls {
       for ( auto& move : mCollapseAnimations ) {
         toReturn = true;
         move->ellapsed += 33;
-        float x = 1.0f - move->lerpX.getValue( move->ellapsed );
+        float x = fabs( move->mMovement.first - move->lerpX.getValue( move->ellapsed ) ) + 1.0f;
 
-        // std::cout << "ellapsed " << move->ellapsed << " of " << move->lerpX.mDuration << std::endl;
+        std::cout << "ellapsed " << move->ellapsed << " of " << move->lerpX.mDuration << ": " << x;
+        std::cout << " initial: " << move->lerpX.mInitialValue << " delta: " << move->lerpX.mDelta << std::endl;
         
-        for ( int y = 0; y < CColumn::kColumnHeight; ++y ) {
+        for ( int y = 0; y < move->mColumn.size(); ++y ) {
           auto colour = move->mColumn[ y ];
-          // if ( colour != CColumn::EColour::eNothing ) {
-            renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, colorsForBlocks[ colour ] );
-          // }
+          if ( colour != CColumn::EColour::eNothing ) {
+            float sy = CColumn::kColumnHeight - y - 1;
+            renderer->drawSquare( x * 64.0, sy * 64.0, (x + 1.0) * 64.0, (sy + 1.0) * 64.0, colorsForBlocks[ colour ] );
+          }
         }        
       }
 
@@ -103,7 +106,12 @@ namespace BlockyFalls {
         
         if ( animation->mOnEnded != nullptr && toReturn ) {
           for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
-              animation->mOnEnded( std::pair<int,int>( animation->lerpX.mInitialValue, c ) );
+
+              if ( animation->mColumn[ c ] == CColumn::EColour::eNothing ) {
+                continue;
+              }
+              std::cout << "returning " << animation->mMovement.first << ", " << c << std::endl;
+              animation->mOnEnded( std::pair<int,int>( animation->mMovement.first, c ) );
           }
         }
         

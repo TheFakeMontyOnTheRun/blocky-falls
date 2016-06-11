@@ -113,7 +113,7 @@ namespace BlockyFalls {
 		auto columns = mGameSession->getLevel()->getColumnCollapseList();
 		
 		for ( auto& movement : columns ) {
-			std::cout << "starting column collapse animation" << std::endl;
+			// std::cout << "starting column collapse animation" << std::endl;
 
 			std::vector<CColumn::EColour> column;
 			
@@ -126,13 +126,13 @@ namespace BlockyFalls {
 				}
 
 				std::cout << "pushing " << block.first << ", " << block.second << std::endl;
-		// 		column.push_back( colour  );
+				column.push_back( colour  );
 				exclusionList.insert( block );
-				onCollapseFinished( block );
+				// onCollapseFinished( block );
 			}
 
 
-		// 	animationHelper.moveColumn( movement, column, onCollapseFinished );
+			animationHelper.moveColumn( movement, column, onCollapseFinished );
 				
 		}
 	}
@@ -165,30 +165,31 @@ namespace BlockyFalls {
 				generateDropAnimations( mGameSession->getLevel(), [&]( std::pair<int, int> origin) {
 					exclusionList.erase( origin );
 
-					std::cout << "exclusionList: ";
-					for ( auto& pair : exclusionList ) {
-						std::cout << ";" << pair.first << ", " << pair.second;
-					}
-					std::cout << std::endl;
-
 					if ( animationFinishedForColumn( origin.first ) ) {
-						std::cout << "collapse " << origin.first << std::endl;
+						// std::cout << "collapse " << origin.first << std::endl;
 						mGameSession->getLevel()->dropBlocksAboveEmptySpaces( origin.first );
 					}
 					
 
 					if ( exclusionList.size() == 0 ) {
-						std::cout << "------\n\n\n\n\n\n\n\n\n\n\n\n" << std::endl;
-						// generateColumnCollapseAnimations( mGameSession->getLevel(), [&](std::pair<int,int> block){
+						
+						generateColumnCollapseAnimations( mGameSession->getLevel(), [&](std::pair<int,int> block){
 							
-						// 	exclusionList.erase( block );
-						// 	std::cout << "removing " << block.first << ", " << block.second << std::endl;
-						// 	if ( exclusionList.size() == 0 ) {
-						// 		std::cout << "finished column collapse animation" << std::endl;
+							exclusionList.erase( block );
+							// std::cout << "exclusionList: ";
+							// for ( auto& pair : exclusionList ) {
+							// 	std::cout << ";" << pair.first << ", " << pair.second;
+							// }
+							// std::cout << std::endl;
+
+							// std::cout << "removing " << block.first << ", " << block.second << std::endl;
+							if ( exclusionList.size() == 0 ) {
 								
+								// std::cout << "finished column collapse animation" << std::endl;
+								std::cout << "------\n\n" << std::endl;
 								mGameSession->getLevel()->collapseEmptyColumns();
-							// }	
-						// });
+							}	
+						});
 					}
 				});	
 			}
@@ -198,6 +199,10 @@ namespace BlockyFalls {
 	}
 	
 	void CGameplayView::onKey( long keyCode ) {
+		if ( exclusionList.size() > 0 ) {
+			std::cout << "busy" << std::endl;
+			return;
+		}
 		mGameSession->getLevel()->addRandomColumn();
 	}
 }

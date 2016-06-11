@@ -4,9 +4,10 @@
 namespace Vipper {
 	class CLerp {
 		
-		float mDelta;
+
 		
 		public:
+				float mDelta;
 		float mDuration;
 		float mInitialValue;
 		explicit CLerp( long initialValue, long finalValue, long duration );

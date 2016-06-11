@@ -14,9 +14,10 @@ namespace BlockyFalls {
     EColour getRandomPiece();
     bool isEmpty();
     std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> getDropList( int xPos);
-    void dropBlocksAboveEmptySpaces();    
+    void dropBlocksAboveEmptySpaces();
+    std::vector<EColour> mBlocks;    
   private:
-    std::vector<EColour> mBlocks;
+    
   };
 }
 #endif

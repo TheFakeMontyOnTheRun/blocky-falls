@@ -13,6 +13,12 @@ namespace BlockyFalls {
         
         auto column = std::make_shared<CColumn>();
         mColumns.insert( mColumns.begin(), column );
+
+        if ( mColumns.size() % 2 == 0 ) {
+            for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
+                mColumns[ 1 ]->mBlocks[ c ] = CColumn::EColour::eRed;
+            }
+        }
     }
   
     CLevel::CLevel( int initialColumns ) {
@@ -122,27 +128,24 @@ namespace BlockyFalls {
         };
 
         size_t size = mColumns.size();
-        int nonEmptyColumns = 0;
         int emptyColumns = 0;
-        int position = size - 1;
+        int position = 0;
 
         for ( auto& column : mColumns ) {
 
             if ( column->isEmpty() ) {
                 emptyColumns++;
             } else {
-                nonEmptyColumns++;
 
                 if ( emptyColumns > 0 ) {
-                    int from = size -(size - nonEmptyColumns - 1) - 1 + 1;
-                    int to = size - position - 1 - 1 - 1;
+                    int from = position;
+                    int to = position - emptyColumns;
                     auto path = std::pair<int, int>( from, to);
-
-                    std::cout << "column " << from << " to position " << to << std::endl;
+                    // std::cout << "column " << from << " to position " << to << std::endl;
                     toReturn.insert(  path );
                 }
             }
-            --position;
+            ++position;
         }
         return toReturn;
     }
