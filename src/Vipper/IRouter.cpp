@@ -13,9 +13,6 @@ namespace Vipper {
 	}
 	
 	void IRouter::setNextRoute( std::shared_ptr<IRouter> nextRoute ) {
-		if ( nextRoute != nullptr ) {
-			std::cout << "A new route was set!" << std::endl;
-		}
 		mNextRoute = nextRoute;
 	}
 	

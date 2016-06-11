@@ -3,8 +3,6 @@
 
 namespace BlockyFalls {
 
-	static std::map<CColumn::EColour, int> coloursForBlocks;
-
   class CBlockAnimationHelper {
     public:
     

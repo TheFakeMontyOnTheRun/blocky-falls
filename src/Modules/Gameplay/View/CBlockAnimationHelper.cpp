@@ -3,7 +3,6 @@
 #include <memory>
 #include <utility>
 #include <functional>
-#include <iostream>
 #include <algorithm>
 #include "Vipper/Vipper.h"
 #include "Vipper/CLerp.h"
@@ -11,12 +10,14 @@
 #include "Modules/Gameplay/View/CBlockAnimationHelper.h"
 
 namespace BlockyFalls {
+
+  std::map<CColumn::EColour, int> colorsForBlocks;
+
   CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > position, std::function<void()> onEnded) : mPosition( position ), lerp( 0, 255, 1000 ), ellapsed( 0 ), mOnEnded( onEnded ) {
   }
 
     
   CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void()> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 * ( to.second - from.second ) ), ellapsed( 0 ), mOnEnded(onEnded ), mColour( colour ) {
-  std::cout << "animating for " << ( to.second - from.second ) << std::endl;
   }
     
     
@@ -37,8 +38,14 @@ namespace BlockyFalls {
     
   bool CBlockAnimationHelper::draw( std::shared_ptr<Vipper::IRenderer> renderer) {
 
+		colorsForBlocks[ CColumn::EColour::eRed 	] = 0xFF0000;
+		colorsForBlocks[ CColumn::EColour::eYellow ] = 0xFFFF00;
+		colorsForBlocks[ CColumn::EColour::eGrey	] = 0x999999;
+		colorsForBlocks[ CColumn::EColour::eBlue 	] = 0x0000FF;
+		colorsForBlocks[ CColumn::EColour::eNothing] = 0x00FF00;
+
+
       bool toReturn = false;
-      std::cout << "draw============" << std::endl;
       for ( auto& fall : mFallingAnimations ) {
         toReturn = true;
         fall->ellapsed += 33;
@@ -47,8 +54,7 @@ namespace BlockyFalls {
         float x = dx;
         float y = dy;
         
-        std::cout << "falling " << y << std::endl;
-        renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, 0xFFFFFF);//coloursForBlocks[fall->mColour] );        
+        renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, colorsForBlocks[fall->mColour] );        
       }
       
       for ( auto& vanish : mVanishingAnimations ) {
@@ -57,7 +63,6 @@ namespace BlockyFalls {
         int y = vanish->mPosition.second;
         vanish->ellapsed += 33;
         auto colour = vanish->lerp.getValue( vanish->ellapsed );
-        std::cout << "vanishing " << colour << std::endl;
         renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
       }
       
