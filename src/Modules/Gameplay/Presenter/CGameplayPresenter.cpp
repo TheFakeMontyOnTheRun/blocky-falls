@@ -1,3 +1,4 @@
+#include <set>
 #include "Vipper/Vipper.h"
 #include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"

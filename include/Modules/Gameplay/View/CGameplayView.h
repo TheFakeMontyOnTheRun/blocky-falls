@@ -7,12 +7,14 @@ namespace BlockyFalls {
     std::pair<int,int> mLastClick;
     std::shared_ptr<CGameSession> mGameSession;
     std::set<std::pair<int,int>> exclusionList;
+
+    bool animationFinishedForColumn( int x );
   public:
     explicit CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer);
 
     void generateExplosions( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onExplosionsFinished );
     void generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onDropsFinished );
-    void generateColumnCollapseAnimations( std::shared_ptr<CLevel> level, std::function<void()> onCollapseFinished );
+    void generateColumnCollapseAnimations( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onCollapseFinished );
     void drawSquareAt( std::tuple<int, int, CColumn::EColour> block );
     void drawTextAt( std::pair<int, int> position, std::string text );
     void drawGaugeAt( std::pair<int, int> position, float howFilled);

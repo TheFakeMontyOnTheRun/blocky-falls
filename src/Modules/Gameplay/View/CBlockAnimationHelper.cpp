@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <set>
 #include <tuple>
 #include <map>
@@ -15,11 +17,21 @@ namespace BlockyFalls {
 
   std::map<CColumn::EColour, int> colorsForBlocks;
 
-  CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > position, std::function<void(std::pair<int, int>)> onEnded) : mPosition( position ), lerp( 0, 255, 1000 ), ellapsed( 0 ), mOnEnded( onEnded ) {
+  CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > position, std::function<void(std::pair<int, int>)> onEnded) : mPosition( position ), lerp( 0, 255, 500 ), ellapsed( 0 ), mOnEnded( onEnded ) {
   }
 
     
   CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 * ( to.second - from.second ) ), ellapsed( 0 ), mOnEnded(onEnded ), mColour( colour ) {
+  }
+
+
+  CBlockAnimationHelper::MoveColumnAnimation::MoveColumnAnimation(std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded):
+  mColumn(column), ellapsed( 0 ), lerpX( movement.second, movement.first, 500 * ( movement.first - movement.second ) ) , mMovement( movement ), mOnEnded( onEnded ) {
+  } 
+  
+
+  void CBlockAnimationHelper::moveColumn( std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded) {
+    mCollapseAnimations.push_back( std::make_shared<MoveColumnAnimation>(movement, column, onEnded) );
   }
     
     
@@ -48,6 +60,22 @@ namespace BlockyFalls {
 
 
       bool toReturn = false;
+
+      for ( auto& move : mCollapseAnimations ) {
+        toReturn = true;
+        move->ellapsed += 33;
+        float x = 1.0f - move->lerpX.getValue( move->ellapsed );
+
+        // std::cout << "ellapsed " << move->ellapsed << " of " << move->lerpX.mDuration << std::endl;
+        
+        for ( int y = 0; y < CColumn::kColumnHeight; ++y ) {
+          auto colour = move->mColumn[ y ];
+          // if ( colour != CColumn::EColour::eNothing ) {
+            renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, colorsForBlocks[ colour ] );
+          // }
+        }        
+      }
+
       for ( auto& fall : mFallingAnimations ) {
         toReturn = true;
         fall->ellapsed += 33;
@@ -67,8 +95,22 @@ namespace BlockyFalls {
         auto colour = ( 255 - ( (int) vanish->lerp.getValue( vanish->ellapsed ) ) ) << 8;
         renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
       }
-      
-      
+
+
+      mCollapseAnimations.erase( std::remove_if(mCollapseAnimations.begin(), mCollapseAnimations.end(), [&](std::shared_ptr<MoveColumnAnimation> animation ){
+        
+        bool toReturn = (animation->ellapsed > animation->lerpX.mDuration); 
+        
+        if ( animation->mOnEnded != nullptr && toReturn ) {
+          for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
+              animation->mOnEnded( std::pair<int,int>( animation->lerpX.mInitialValue, c ) );
+          }
+        }
+        
+        return toReturn;
+      }), mCollapseAnimations.end() );
+
+
       mFallingAnimations.erase( std::remove_if(mFallingAnimations.begin(), mFallingAnimations.end(), [&](std::shared_ptr<FallingBlockAnimation> animation ){
         
         bool toReturn = (animation->ellapsed > animation->lerpY.mDuration); 

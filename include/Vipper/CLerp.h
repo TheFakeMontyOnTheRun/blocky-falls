@@ -3,11 +3,12 @@
 
 namespace Vipper {
 	class CLerp {
-		float mInitialValue;
+		
 		float mDelta;
 		
 		public:
 		float mDuration;
+		float mInitialValue;
 		explicit CLerp( long initialValue, long finalValue, long duration );
 		float getValue( long ellapsed );	
 	};

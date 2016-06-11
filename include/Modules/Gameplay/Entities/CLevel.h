@@ -16,6 +16,8 @@ namespace BlockyFalls {
     void collapseEmptyColumns();
     std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> getDropList();
     void dropBlocksAboveEmptySpaces( int column );
+    std::set< std::pair<int, int >> getColumnCollapseList();
+    bool isColumnEmpty( int index );
   private:
     std::vector<std::shared_ptr<CColumn>> mColumns;
   };

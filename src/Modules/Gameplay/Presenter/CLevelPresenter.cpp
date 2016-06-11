@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "Vipper/Vipper.h"
+#include <set>
 #include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/Entities/CLevel.h"
 #include "Modules/Gameplay/Presenter/CLevelPresenter.h"

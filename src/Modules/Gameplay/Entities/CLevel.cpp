@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <set>
 
 #include "Vipper/Vipper.h"
 #include "Modules/Gameplay/Entities/CColumn.h"
@@ -31,6 +32,10 @@ namespace BlockyFalls {
         }
       
         return CColumn::EColour::eNothing;
+    }
+
+    bool CLevel::isColumnEmpty( int index ) {
+        return mColumns[ index ]->isEmpty();
     }
     
     bool CLevel::canBreakAt( int x, int y ) {
@@ -107,6 +112,39 @@ namespace BlockyFalls {
         };
         
         mColumns.erase( std::remove_if( mColumns.begin(), mColumns.end(), predicate), mColumns.end() );
+    }
+
+    std::set< std::pair<int, int >> CLevel::getColumnCollapseList() {
+        std::set< std::pair<int, int >> toReturn;
+        
+        static const auto predicate = [](std::shared_ptr<CColumn> c) {
+            return c->isEmpty();
+        };
+
+        size_t size = mColumns.size();
+        int nonEmptyColumns = 0;
+        int emptyColumns = 0;
+        int position = size - 1;
+
+        for ( auto& column : mColumns ) {
+
+            if ( column->isEmpty() ) {
+                emptyColumns++;
+            } else {
+                nonEmptyColumns++;
+
+                if ( emptyColumns > 0 ) {
+                    int from = size -(size - nonEmptyColumns - 1) - 1 + 1;
+                    int to = size - position - 1 - 1 - 1;
+                    auto path = std::pair<int, int>( from, to);
+
+                    std::cout << "column " << from << " to position " << to << std::endl;
+                    toReturn.insert(  path );
+                }
+            }
+            --position;
+        }
+        return toReturn;
     }
     
     std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> CLevel::getDropList() {

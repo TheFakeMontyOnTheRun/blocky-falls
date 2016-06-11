@@ -29,9 +29,24 @@ namespace BlockyFalls {
       FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded);
     };
     
+    class MoveColumnAnimation {
+      public:
+
+      Vipper::CLerp lerpX;
+      long ellapsed;
+      std::pair< int, int > mMovement;
+      std::vector<CColumn::EColour> mColumn;
+      std::function<void(std::pair<int, int>)> mOnEnded;
+            
+      MoveColumnAnimation(std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded);
+    };
+
+
     std::vector<std::shared_ptr<VanishingBlockAnimation>> mVanishingAnimations;
     std::vector<std::shared_ptr<FallingBlockAnimation>> mFallingAnimations;
-    
+    std::vector<std::shared_ptr<MoveColumnAnimation>> mCollapseAnimations;
+
+    void moveColumn( std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)>);    
     void animateFallingBlocks( std::vector<std::tuple< std::pair<int, int>, std::pair<int, int>, CColumn::EColour>> paths, std::function<void(std::pair<int,int>)> onEnded );
     void vanishBlock( std::vector<std::pair< int, int >> position, std::function<void(std::pair<int,int>)> onEnded);
     bool draw( std::shared_ptr<Vipper::IRenderer> renderer);
