@@ -41,12 +41,12 @@ namespace BlockyFalls {
       SDL_FillRect( video, &rect, colour );
     };
     
-    void CSDLRenderer::drawTextAt( int x, int y, std::string text, Vipper::IRenderer::FontId id ) {
+    void CSDLRenderer::drawTextAt( int x, int y, std::string text, std::array<int, 4> colour, Vipper::IRenderer::FontId id ) {
       if ( id == 0 ) {
         return;
       }
 
-      SDL_Color color = {255, 0, 0, 255 };
+      SDL_Color color = { (Uint8)colour[ 0 ], (Uint8)colour[ 1 ], (Uint8)colour[ 2 ], (Uint8)colour[ 3 ] };
       auto font = mFonts[ id ];
       auto result = TTF_RenderText_Solid( font, text.c_str(), color );
       SDL_Rect rect;

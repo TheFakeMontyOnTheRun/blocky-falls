@@ -23,7 +23,7 @@ namespace BlockyFalls {
 		ellapsed += 33;
 		long delta = lerp.getValue( ellapsed );
 		renderer->drawSquare( mButton.mBounds.mX0 + delta, mButton.mBounds.mY0, mButton.mBounds.mX1 + delta, mButton.mBounds.mY1, 0xFF0000 );
-		renderer->drawTextAt( 20, 20, "BlockyFalls!", mTitleTextFont );	
+		renderer->drawTextAt( 20, 20, "BlockyFalls!", {255,0,255,255}, mTitleTextFont );	
 	}
 	
 	void CTitleScreenView::onClick( std::pair<int, int> position ) {
