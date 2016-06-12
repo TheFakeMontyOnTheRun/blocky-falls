@@ -4,6 +4,7 @@
 #include <memory>
 #include <map>
 #include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
 #include <SDL/SDL_mixer.h>
 #include "Vipper/Vipper.h"
 #include "CSDLRenderer.h"
@@ -12,11 +13,15 @@
 namespace BlockyFalls {
         
     Vipper::IRenderer::BitmapId CSDLRenderer::loadBitmap( std::string path ) {
-      return 0;
+      auto id = mSprites.size() + 1;
+      mSprites[ id ] = IMG_Load( path.c_str() );
+      return id;
     }
     
     Vipper::IRenderer::SoundId CSDLRenderer::loadSound( std::string path ) {
-      return 0;
+      auto id = mSounds.size() + 1;
+      mSounds[ id ] = Mix_LoadWAV(path.c_str() );
+      return id;
     }
     
     void CSDLRenderer::drawSquare( int x, int y, int x2, int y2, int colour ) {
@@ -29,8 +34,31 @@ namespace BlockyFalls {
     };
     
     void CSDLRenderer::drawTextAt( int x, int y, std::string text ) {};
-    void CSDLRenderer::drawBitmapAt( int x, int y, const IRenderer::BitmapId& id ) {};
-    void CSDLRenderer::playSound( const IRenderer::SoundId& id ) {};    
+
+    void CSDLRenderer::drawBitmapAt( int x, int y, int w, int h, const IRenderer::BitmapId& id ) {
+
+      if ( id == 0 ) {
+        return;
+      }
+
+      auto bitmap = mSprites[ id ];
+      SDL_Rect rect;
+      rect.x = x;
+      rect.y = y;
+      rect.w = w;
+      rect.h = h;
+      SDL_BlitSurface( bitmap, nullptr, video, &rect );
+    };
+
+    void CSDLRenderer::playSound( const IRenderer::SoundId& id ) {
+      if ( id == 0 ) {
+        return;
+      }
+
+      auto sound = mSounds[ id ];
+
+      Mix_PlayChannel( -1, sound, 0 );
+    };    
 
 
   //Mix_Chunk *sound;  

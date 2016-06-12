@@ -15,7 +15,7 @@ namespace BlockyFalls {
     SoundId loadSound( std::string path ) override;
     void drawSquare( int x, int y, int x2, int y2, int colour ) override;
     void drawTextAt( int x, int y, std::string text ) override;
-    void drawBitmapAt( int x, int y, const BitmapId& id ) override;
+    void drawBitmapAt( int x, int y, int w, int h, const BitmapId& id ) override;
     void playSound( const SoundId& id ) override;    
   };
 }

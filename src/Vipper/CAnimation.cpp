@@ -6,10 +6,13 @@
 
 #include "Vipper/Vipper.h"
 #include "Vipper/CLerp.h"
+#include "Modules/Gameplay/Entities/CColumn.h"
 #include "Vipper/CAnimation.h"
 
+
+
 namespace Vipper {
-		CAnimation::CAnimation( std::pair<int, int> from, std::pair<int, int> to, std::function< void(std::shared_ptr<IRenderer>)> drawFunction, long duration, std::function<void(std::pair<int,int>)> onEnded ):
+		CAnimation::CAnimation( std::pair<int, int> from, std::pair<int, int> to, std::function< void(std::function<void(std::pair<float, float>, BlockyFalls::CColumn::EColour)>)> drawFunction, long duration, std::function<void(std::pair<int,int>)> onEnded ):
 		mOrigin( from ), mDestination( to ), mDrawFunction( drawFunction ), mOnAnimationEnded( onEnded ),
 		mLerpX( from.first, to.first, duration ), mLerpY( from.second, to.second, duration ) {
 		}
@@ -34,9 +37,6 @@ namespace Vipper {
 			return mDestination;
 		}
 
-		
-
-
 		void CAnimation::update( long ms ) {
 			mLerpX.update( ms );
 			mLerpY.update( ms );
@@ -50,7 +50,7 @@ namespace Vipper {
 			return mLerpX.isFinished() && mLerpY.isFinished();
 		}
 
-		void CAnimation::draw(std::shared_ptr<IRenderer> renderer) {
-			mDrawFunction(renderer);
+		void CAnimation::draw(std::function<void(std::pair<float,float>, BlockyFalls::CColumn::EColour)> drawHelper) {
+			mDrawFunction(drawHelper);
 		}
 }

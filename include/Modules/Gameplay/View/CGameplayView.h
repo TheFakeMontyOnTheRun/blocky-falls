@@ -7,7 +7,8 @@ namespace BlockyFalls {
     std::pair<int,int> mLastClick;
     std::shared_ptr<CGameSession> mGameSession;
     std::set<std::pair<int,int>> exclusionList;
-
+    std::map<CColumn::EColour, Vipper::IRenderer::BitmapId> mBitmapsForColours;
+    std::vector<Vipper::IRenderer::BitmapId> mExplosionEffect;
     bool animationFinishedForColumn( int x );
   public:
     explicit CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer);

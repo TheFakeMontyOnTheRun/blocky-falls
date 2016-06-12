@@ -9,7 +9,7 @@ namespace BlockyFalls {
     using CIndex = int;
     static const int kColumnHeight = 7;
     
-    enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing, eSpecial};
+    enum class EColour{ eRed, eYellow, eGrey, eBlue, eNothing, eSpecial, eSpark1, eSpark2, eSpark3, eSpark4, eSpark5};
     explicit CColumn();
     EColour colourAt( int index );
     void breakBlockAt( int index );
