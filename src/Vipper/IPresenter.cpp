@@ -11,10 +11,6 @@ namespace Vipper {
 	void IPresenter::setInteractor( std::shared_ptr<IInteractor> interactor) {
 		mInteractor = interactor;
 	}
-		
-	std::shared_ptr<IRouter> IPresenter::getRouter() {
-		return mRouter;
-	}
 	
 	void IPresenter::setRouter( std::shared_ptr<IRouter> router) {
 		mRouter = router;

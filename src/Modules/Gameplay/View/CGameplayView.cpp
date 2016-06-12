@@ -39,24 +39,29 @@ namespace BlockyFalls {
 		mFallSound = renderer->loadSound( "res/fall.wav" );
 		mCollapseSound = renderer->loadSound( "res/collapse.wav" );
     	mBustedSound = renderer->loadSound("res/busted.wav");
-	}
+    	mPullSound = renderer->loadSound("res/pull.wav");
 
-    void CGameplayView::drawSquareAt( std::tuple<int, int, CColumn::EColour> block ) {
+		mUIFont = renderer->loadFont( "res/albaregular.ttf", 15 );
 	}
 	
     void CGameplayView::drawTextAt( std::pair<int, int> position, std::string text ) {
+		auto renderer = getRenderer();
+		renderer->drawTextAt( position.first, position.second, text, {0xFF, 0xFF, 0x00, 0xFF }, mUIFont  );
 	}
 	
-    void CGameplayView::drawGaugeAt( std::pair<int, int> position, float howFilled) {
+    void CGameplayView::drawGaugeAt( std::pair<int, int> position, int howFilled) {
+		auto renderer = getRenderer();
+		renderer->drawSquare(position.first, position.second, 100, 20, 0xFF);
+		renderer->drawSquare(position.first, position.second, howFilled, 20, 0xFF0000);
 	}
 	
     std::pair<int, int> CGameplayView::getLastClick() {
 		return std::pair<int, int>( 0, 0 );	
 	}
-	
+
     void CGameplayView::show() {
 		auto renderer = getRenderer();
-		renderer->drawSquare( 0, 0, 640, 480, 0 );
+		renderer->drawSquare( 0, 0, 640 - 64, 480, 0 );
 	
 		auto level = mGameSession->getLevel();
 		
@@ -88,13 +93,31 @@ namespace BlockyFalls {
 
 		animationHelper.draw( renderer, drawBlock );
 	}
+
+	void CGameplayView::setClickDelegate(std::function<void(std::pair<int,int>)> delegate) {
+		mClickDelegate = delegate;
+	}
 	
+	void CGameplayView::setKeyDelegate(std::function<void(long keyCode)> delegate) {
+		mKeyDelegate = delegate;
+	}
+
+	void CGameplayView::drawLimitLine() {
+		auto renderer = getRenderer();
+		renderer->drawSquare( 640 - 64, 0, 640, 480, 0xFF0000 );
+	}
+
 	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onExplosionsFinished ) {
 		std::vector< CColumn::CCoordinates > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
 		
+		int score = 1;
+
 		for ( auto& origin : positions ) {
 			exclusionList.insert( origin );
+			++score;
 		}
+
+		mGameSession->addToScore( score );
 
 		animationHelper.vanishBlock( positions, onExplosionsFinished );
 	}
@@ -143,29 +166,38 @@ namespace BlockyFalls {
 
 		return true;
 	} 
-	
-	void CGameplayView::onClick( std::pair<int, int> position ) {
 
-		if ( exclusionList.size() > 0 ) {
+	bool CGameplayView::hasAllAnimationsCeased() {
+		return exclusionList.size() == 0;
+	}
+	
+	void CGameplayView::onPull() {
+		getRenderer()->playSound( mPullSound );
+	}
+
+	void CGameplayView::onClick( std::pair<int, int> position ) {
+		if ( !hasAllAnimationsCeased() ) {
 			return;
+		}
+
+		if ( mClickDelegate != nullptr ) {
+			mClickDelegate( position );
 		}
 
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
 
-		auto onExplosionsFinished = [&]( CColumn::CCoordinates origin ){
-			
-			if ( exclusionList.size() > 0 ) {
+		const static auto onExplosionsFinished = [&]( CColumn::CCoordinates origin ){
+			if ( !hasAllAnimationsCeased() ) {
 				getRenderer()->playSound( mBustedSound );
 			}
 			
 			exclusionList.erase( origin );
 
-			if ( exclusionList.size() == 0 ) {
-				
+			if ( hasAllAnimationsCeased() ) {
 				generateDropAnimations( mGameSession->getLevel(), [&]( CColumn::CCoordinates origin) {
 					
-					if ( exclusionList.size() > 0 ) {
+					if ( !hasAllAnimationsCeased() ) {
 						getRenderer()->playSound( mFallSound );
 					}
 
@@ -175,17 +207,17 @@ namespace BlockyFalls {
 						mGameSession->getLevel()->dropBlocksAboveEmptySpaces( origin.first );
 					}
 					
-					if ( exclusionList.size() == 0 ) {
-						generateColumnCollapseAnimations( mGameSession->getLevel(), [&](CColumn::CCoordinates block){							
+					if ( hasAllAnimationsCeased() ) {
 
-							if ( exclusionList.size() > 0 ) {
+						generateColumnCollapseAnimations( mGameSession->getLevel(), [&](CColumn::CCoordinates block){							
+	
+							if ( !hasAllAnimationsCeased() ) {
 								getRenderer()->playSound( mCollapseSound );
 							}
 
 							exclusionList.erase( block );
 
-							if ( exclusionList.size() == 0 ) {
-
+							if ( hasAllAnimationsCeased() ) {
 								mGameSession->getLevel()->collapseEmptyColumns();
 							}	
 						});
@@ -198,9 +230,12 @@ namespace BlockyFalls {
 	}
 	
 	void CGameplayView::onKey( long keyCode ) {
-		if ( exclusionList.size() > 0 ) {
+		if ( !hasAllAnimationsCeased() ) {
 			return;
 		}
-		mGameSession->getLevel()->addRandomColumn();
+
+		if ( mKeyDelegate != nullptr ) {
+			mKeyDelegate( keyCode );
+		}
 	}
 }

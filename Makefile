@@ -12,10 +12,7 @@ src/Vipper/IInteractor.o src/Vipper/IPresenter.o src/Vipper/IRouter.o src/Vipper
 src/Vipper/CAnimation.o src/Modules/Gameplay/Entities/CColumn.o src/Modules/Gameplay/Entities/CLevel.o \
 src/Modules/Gameplay/Entities/CGameSession.o src/Modules/Gameplay/Presenter/CGameplayPresenter.o \
 src/Modules/Gameplay/Presenter/CLevelPresenter.o src/Modules/Gameplay/Router/CGameplayRouter.o \
-src/Modules/Gameplay/View/CGameplayView.o src/Modules/Gameplay/View/CBlockAnimationHelper.o src/Modules/Gameplay/Interactor/CBlocksMustFall.o \
-src/Modules/Gameplay/Interactor/CColumnsMustCollapse.o src/Modules/Gameplay/Interactor/CEliminateBlock.o \
-src/Modules/Gameplay/Interactor/CIsGameOver.o src/Modules/Gameplay/Interactor/CIsLevelComplete.o \
-src/Modules/Gameplay/Interactor/CPullColumns.o src/Modules/Gameplay/Interactor/CPullsHappenPeriodically.o \
+src/Modules/Gameplay/View/CGameplayView.o src/Modules/Gameplay/View/CBlockAnimationHelper.o \
 src/Modules/Gameplay/Interactor/CGameplayInteractor.o
 LIBS = $(SDL_LIB)
 TARGET = blockyfalls

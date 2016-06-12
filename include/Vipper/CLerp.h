@@ -3,9 +3,6 @@
 
 namespace Vipper {
 	class CLerp {
-		
-
-		
 		public:
 		float mDelta;
 		float mDuration;

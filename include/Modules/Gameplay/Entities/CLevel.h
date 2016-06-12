@@ -5,7 +5,7 @@ namespace BlockyFalls {
   class CLevel : public Vipper::IEntity {
 
   public:
-    static const int kNumberOfColumns = 20;
+    static const int kNumberOfColumns = 11;
 
     explicit CLevel( int initialColumns );
     CColumn::EColour colourAt( int x, int y );

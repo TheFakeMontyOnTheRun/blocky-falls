@@ -31,19 +31,8 @@ namespace Vipper {
 	std::string IRouter::getName() {
 		return mName;
 	}
-	
-	void IRouter::setInteractor( std::shared_ptr<IInteractor> interactor ) {
-		mInteractor = interactor;	
-	}
-	
-	std::shared_ptr<IInteractor> IRouter::getInteractor() {
-		return mInteractor;
-	}
-	
-	void IRouter::setRenderer( std::shared_ptr<Vipper::IRenderer> renderer ) {
-		mRenderer = renderer;
-	}
-	
+
+		
 	std::shared_ptr<Vipper::IRenderer> IRouter::getRenderer() {
 		return mRenderer;
 	}

@@ -21,7 +21,6 @@ namespace BlockyFalls {
 		auto interactor = std::make_shared<BlockyFalls::CGameplayInteractor>( shared_from_this());
 		
 		setPresenter( presenter );
-		setInteractor( interactor );
 		presenter->setView( view );
 		presenter->setInteractor( interactor );
 		view->setPresenter( presenter );

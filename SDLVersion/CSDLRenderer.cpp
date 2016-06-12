@@ -81,10 +81,9 @@ namespace BlockyFalls {
 
       Mix_PlayChannel( -1, sound, 0 );
     };    
-
-
-  //Mix_Chunk *sound;  
+  
   CSDLRenderer::CSDLRenderer() {
+  
     //REFACTOR!  
     SDL_Init(  SDL_INIT_EVERYTHING );
     TTF_Init();
@@ -93,15 +92,6 @@ namespace BlockyFalls {
     if ( Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1 ) {
       std::cout << "coudlnt init mixer" << std::endl;
     }
-
-    if (Mix_Init(MIX_INIT_OGG) != MIX_INIT_OGG ) {
-      std::cout << "coudlnt init ogg" << std::endl;
-    }
-    mSprites[ 0 ] = SDL_LoadBMP("res/fireball.bmp");
-
-    // if (!(meeleeSound = Mix_LoadWAV( "res/meelee.wav" ) ) ) {
-    //   std::cout << "Loading meelee sound failed" << std::endl;
-    // }    
   }
 
   void CSDLRenderer::shutdown() {

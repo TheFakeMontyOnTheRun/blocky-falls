@@ -14,7 +14,6 @@ namespace Vipper {
 		std::shared_ptr<IInteractor> getInteractor();
 		void setInteractor( std::shared_ptr<IInteractor> interactor);
 		
-		std::shared_ptr<IRouter> getRouter();
 		void setRouter( std::shared_ptr<IRouter> router);
 
 		std::shared_ptr<IView> getView();

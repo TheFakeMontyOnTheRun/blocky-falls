@@ -14,16 +14,16 @@ namespace BlockyFalls {
 	long ellapsed = 0;
 	CTitleScreenView::CTitleScreenView( std::shared_ptr<Vipper::IRenderer> renderer ) : IView( renderer ) {
 		mButton.mBounds = CRect( 200, 300, 250, 350 );
-		mTitleTextFont = renderer->loadFont( "res/albasuper.ttf", 20 );
+		mTitleTextFont = renderer->loadFont( "res/albasuper.ttf", 40 );
 	}
 	
 	void CTitleScreenView::show() {
 		auto renderer = getRenderer();
-		renderer->drawSquare( 0,0, 640, 480, 0 );
+		(*renderer).drawSquare( 0,0, 640, 480, 0 );
 		ellapsed += 33;
 		long delta = lerp.getValue( ellapsed );
 		renderer->drawSquare( mButton.mBounds.mX0 + delta, mButton.mBounds.mY0, mButton.mBounds.mX1 + delta, mButton.mBounds.mY1, 0xFF0000 );
-		renderer->drawTextAt( 20, 20, "BlockyFalls!", {255,0,255,255}, mTitleTextFont );	
+		renderer->drawTextAt( 30, 50, "BlockyFalls!", {255,0,255,255}, mTitleTextFont );	
 	}
 	
 	void CTitleScreenView::onClick( std::pair<int, int> position ) {

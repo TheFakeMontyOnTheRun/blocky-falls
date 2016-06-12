@@ -5,9 +5,9 @@ namespace BlockyFalls {
 
   class CGameplayPresenter : public Vipper::IPresenter {
     std::shared_ptr<CGameSession> mGameSession;
-    std::shared_ptr<Vipper::IView> mView;
+    std::shared_ptr<CGameplayView> mView;
   public:
-    explicit CGameplayPresenter(std::shared_ptr<CGameSession> gameSession, std::shared_ptr<Vipper::IView> view ); 
+    explicit CGameplayPresenter(std::shared_ptr<CGameSession> gameSession, std::shared_ptr<CGameplayView> view ); 
     
     void setScore( int score );
     void setPullTime( int timeToPull );

@@ -33,7 +33,6 @@ namespace BlockyFalls {
 			auto presenter = std::make_shared<BlockyFalls::CTitleScreenPresenter>(view);
 				
 			setPresenter( presenter );
-			setInteractor( interactor );
 			presenter->setView( view );
 			presenter->setInteractor( interactor );
 			view->setPresenter( presenter );
