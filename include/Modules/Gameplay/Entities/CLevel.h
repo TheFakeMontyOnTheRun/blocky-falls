@@ -9,14 +9,14 @@ namespace BlockyFalls {
 
     explicit CLevel( int initialColumns );
     CColumn::EColour colourAt( int x, int y );
-    std::vector<std::pair<int, int>> breakBlockAt( std::pair<int, int> position );
+    std::vector<CColumn::CCoordinates> breakBlockAt( CColumn::CCoordinates position );
     void addRandomColumn();
     bool canBreakAt( int x, int y );
-    std::vector<std::pair<int, int>> propagate( int x, int y );
+    std::vector<CColumn::CCoordinates> propagate( int x, int y );
     void collapseEmptyColumns();
-    std::vector<std::tuple<std::pair<int,int>, std::pair<int, int>, CColumn::EColour>> getDropList();
+    std::vector<std::tuple<CColumn::CCoordinates, CColumn::CCoordinates, CColumn::EColour>> getDropList();
     void dropBlocksAboveEmptySpaces( int column );
-    std::set< std::pair<int, int >> getColumnCollapseList();
+    std::set< CColumn::CCoordinates> getColumnCollapseList();
     bool isColumnEmpty( int index );
   private:
     std::vector<std::shared_ptr<CColumn>> mColumns;

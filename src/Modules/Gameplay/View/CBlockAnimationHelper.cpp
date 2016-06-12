@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "Vipper/Vipper.h"
 #include "Vipper/CLerp.h"
+#include "Vipper/CAnimation.h"
 #include "Modules/Gameplay/Entities/CColumn.h"
 #include "Modules/Gameplay/View/CBlockAnimationHelper.h"
 
@@ -17,22 +18,77 @@ namespace BlockyFalls {
 
   std::map<CColumn::EColour, int> colorsForBlocks;
 
-  CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > position, std::function<void(std::pair<int, int>)> onEnded) : mPosition( position ), lerp( 0, 255, 500 ), ellapsed( 0 ), mOnEnded( onEnded ) {
+  CBlockAnimationHelper::CCompoundAnimation::CCompoundAnimation( CColumn::CCoordinates from, CColumn::CCoordinates to, std::function< void(std::shared_ptr<Vipper::IRenderer>)> drawFunction, long duration, std::function<void(std::pair<int,int>)> onEnded ):
+  mAnimation( from, to, drawFunction, duration, onEnded ) {
   }
 
-    
-  CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded) : mPosition( from ), lerpX( from.first, to.first, 500 ), lerpY( from.second, to.second, 500 * ( to.second - from.second ) ), ellapsed( 0 ), mOnEnded(onEnded ), mColour( colour ) {
+  void CBlockAnimationHelper::CCompoundAnimation::draw(std::shared_ptr<Vipper::IRenderer> renderer) {
+    mAnimation.draw(renderer);
   }
 
+  bool CBlockAnimationHelper::CCompoundAnimation::isFinished() {
+    return mAnimation.isFinished();
+  }
 
-  CBlockAnimationHelper::MoveColumnAnimation::MoveColumnAnimation(std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded):
-  mColumn(column), ellapsed( 0 ), lerpX( movement.second, movement.first, 5000 * ( movement.first - movement.second ) ) , mMovement( movement ), mOnEnded( onEnded ) {
-    std::cout << "duration: " << lerpX.mDuration << std::endl;
-  } 
+  void CBlockAnimationHelper::CCompoundAnimation::update( long ms ) {
+    mAnimation.update( ms );
+  }
   
 
+  Vipper::CAnimation CBlockAnimationHelper::CCompoundAnimation::getAnimation() {
+    return mAnimation;
+  }
+
+  CBlockAnimationHelper::VanishingBlockAnimation::VanishingBlockAnimation(std::pair< int, int > from, std::function<void(std::pair<int, int>)> onEnded) 
+  :CCompoundAnimation( from, from, [&](std::shared_ptr<Vipper::IRenderer> renderer ) {
+        mFrameLerp.update( 33 );
+        update( 33 );
+        auto position = getAnimation().getPosition();
+        float x = position.first;
+        float y = position.second;
+        auto colour = ( 255 - ( (int) mFrameLerp.getCurrentValue() ) ) << 8;
+        renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
+    }, 500, onEnded ), mFrameLerp( 0, 255, 500 ) {
+  }
+
+  bool CBlockAnimationHelper::VanishingBlockAnimation::isFinished() {
+    return mFrameLerp.isFinished();
+  }
+
+  CBlockAnimationHelper::FallingBlockAnimation::FallingBlockAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded) 
+  : CCompoundAnimation( from, to, [&](std::shared_ptr<Vipper::IRenderer> renderer ) {
+        update( 33 ); 
+        auto animation = getAnimation();
+        auto position = animation.getPosition();
+        float x = position.first;
+        float y = position.second;
+        renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, colorsForBlocks[mColour] );
+    }, 500 * ( to.second - from.second ), onEnded), mColour( colour ) {
+  }
+
+  CBlockAnimationHelper::MoveColumnAnimation::MoveColumnAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded) 
+  : CCompoundAnimation( to, from, [&](std::shared_ptr<Vipper::IRenderer> renderer ) {  
+      update( 33 );
+      auto animation = getAnimation();
+      auto destination = animation.getDestination();
+      auto origin = animation.getOrigin();
+      auto position = animation.getPosition();
+      auto x = ( fabs( destination.first - origin.first ) - ( position.first - origin.first)) + destination.first;
+      auto y = position.second;
+      // std::cout << "x = " << x << " [ " << origin.first << " : " << destination.first << " ] " << std::endl;
+      renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, colorsForBlocks[mColour] );
+    }, 500 * fabs( to.first - from.first ), onEnded), mColour( colour ) {
+  }
+
   void CBlockAnimationHelper::moveColumn( std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded) {
-    mCollapseAnimations.push_back( std::make_shared<MoveColumnAnimation>(movement, column, onEnded) );
+    
+    int y = 0;
+    for ( auto& block : column ) {
+      auto to = std::pair<int,int>( movement.first, CColumn::kColumnHeight - y - 1 );
+      auto from = std::pair<int,int>( movement.second, CColumn::kColumnHeight - y - 1 );
+      mCollapseAnimations.push_back( std::make_shared<MoveColumnAnimation>(from, to, block, onEnded));
+      ++y;
+    }
   }
     
     
@@ -45,13 +101,13 @@ namespace BlockyFalls {
     }
   }
     
-  void CBlockAnimationHelper::vanishBlock( std::vector<std::pair< int, int >> position, std::function<void(std::pair<int,int>)> onEnded) {
+  void CBlockAnimationHelper::vanishBlock( std::vector<CColumn::CCoordinates> position, std::function<void(CColumn::CCoordinates)> onEnded) {
     for ( auto& pair : position ) {
       mVanishingAnimations.push_back( std::make_shared<VanishingBlockAnimation>(pair, onEnded));
     }
   }
     
-  bool CBlockAnimationHelper::draw( std::shared_ptr<Vipper::IRenderer> renderer) {
+  void CBlockAnimationHelper::draw( std::shared_ptr<Vipper::IRenderer> renderer) {
 
 		colorsForBlocks[ CColumn::EColour::eRed 	] = 0xFF0000;
 		colorsForBlocks[ CColumn::EColour::eYellow ] = 0xFFFF00;
@@ -59,87 +115,29 @@ namespace BlockyFalls {
 		colorsForBlocks[ CColumn::EColour::eBlue 	] = 0x0000FF;
 		colorsForBlocks[ CColumn::EColour::eNothing] = 0x00FF00;
 
+    for ( auto& move : mCollapseAnimations ) {
+      move->draw( renderer );
+    }
 
-      bool toReturn = false;
-
-      for ( auto& move : mCollapseAnimations ) {
-        toReturn = true;
-        move->ellapsed += 33;
-        float x = fabs( move->mMovement.first - move->lerpX.getValue( move->ellapsed ) ) + 1.0f;
-
-        std::cout << "ellapsed " << move->ellapsed << " of " << move->lerpX.mDuration << ": " << x;
-        std::cout << " initial: " << move->lerpX.mInitialValue << " delta: " << move->lerpX.mDelta << std::endl;
-        
-        for ( int y = 0; y < move->mColumn.size(); ++y ) {
-          auto colour = move->mColumn[ y ];
-          if ( colour != CColumn::EColour::eNothing ) {
-            float sy = CColumn::kColumnHeight - y - 1;
-            renderer->drawSquare( x * 64.0, sy * 64.0, (x + 1.0) * 64.0, (sy + 1.0) * 64.0, colorsForBlocks[ colour ] );
-          }
-        }        
-      }
-
-      for ( auto& fall : mFallingAnimations ) {
-        toReturn = true;
-        fall->ellapsed += 33;
-        float dx = fall->lerpX.getValue( fall->ellapsed );
-        float dy = fall->lerpY.getValue( fall->ellapsed );
-        float x = dx;
-        float y = dy;
-        
-        renderer->drawSquare( x * 64.0, y * 64.0, (x + 1.0) * 64.0, (y + 1.0) * 64.0, colorsForBlocks[fall->mColour] );        
-      }
+    for ( auto& fall : mFallingAnimations ) {
+      fall->draw( renderer );        
+    }
       
-      for ( auto& vanish : mVanishingAnimations ) {
-        toReturn = true;
-        int x = vanish->mPosition.first;
-        int y = vanish->mPosition.second;
-        vanish->ellapsed += 33;
-        auto colour = ( 255 - ( (int) vanish->lerp.getValue( vanish->ellapsed ) ) ) << 8;
-        renderer->drawSquare( x * 64, y * 64, (x + 1) * 64, (y + 1) * 64, colour );
-      }
+    for ( auto& vanish : mVanishingAnimations ) {
+      vanish->draw(renderer);
+    }
 
 
       mCollapseAnimations.erase( std::remove_if(mCollapseAnimations.begin(), mCollapseAnimations.end(), [&](std::shared_ptr<MoveColumnAnimation> animation ){
-        
-        bool toReturn = (animation->ellapsed > animation->lerpX.mDuration); 
-        
-        if ( animation->mOnEnded != nullptr && toReturn ) {
-          for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
-
-              if ( animation->mColumn[ c ] == CColumn::EColour::eNothing ) {
-                continue;
-              }
-              std::cout << "returning " << animation->mMovement.first << ", " << c << std::endl;
-              animation->mOnEnded( std::pair<int,int>( animation->mMovement.first, CColumn::kColumnHeight - c - 1 ) );
-          }
-        }
-        
-        return toReturn;
+        return animation->isFinished();
       }), mCollapseAnimations.end() );
 
-
       mFallingAnimations.erase( std::remove_if(mFallingAnimations.begin(), mFallingAnimations.end(), [&](std::shared_ptr<FallingBlockAnimation> animation ){
-        
-        bool toReturn = (animation->ellapsed > animation->lerpY.mDuration); 
-        
-        if ( animation->mOnEnded != nullptr && toReturn ) {
-          animation->mOnEnded( animation->mPosition );
-        }
-        
-        return toReturn;
+        return animation->isFinished();
       }), mFallingAnimations.end() );
    
       mVanishingAnimations.erase( std::remove_if(mVanishingAnimations.begin(), mVanishingAnimations.end(), [&](std::shared_ptr<VanishingBlockAnimation> animation ){
-        bool toReturn = (animation->ellapsed > animation->lerp.mDuration); 
-        
-        if ( animation->mOnEnded != nullptr && toReturn ) {
-          animation->mOnEnded( animation->mPosition );
-        }
-        
-        return toReturn;
+        return animation->isFinished();
       }), mVanishingAnimations.end() );
-      
-      return toReturn;
   }
 }

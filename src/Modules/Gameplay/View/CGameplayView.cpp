@@ -64,15 +64,15 @@ namespace BlockyFalls {
 		}
 		
 		if ( exclusionList.size() > 0 ) {
-			std::cout << std::endl << "ignoring: ";
+			//std::cout << std::endl << "ignoring: ";
 		}
 		
 		
 		for ( auto& position : positions ) {
 
 			if ( exclusionList.find( position ) != exclusionList.end() ) {
-				std::cout << "; " << position.first << ", " << position.second;
-				// continue;
+				//std::cout << "; " << position.first << ", " << position.second;
+				continue;
 			}
 
 			int x = position.first;
@@ -89,26 +89,26 @@ namespace BlockyFalls {
 			renderer->drawSquare( screenX0, screenY0, screenX1, screenY1, colour );
 		}
 
-		if (animationHelper.draw( renderer ) ) {
-			// return;
-		}		
+		animationHelper.draw( renderer );
 	}
 	
 	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onExplosionsFinished ) {
-		std::vector< std::pair< int, int > > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
+		std::vector< CColumn::CCoordinates > positions = mGameSession->getLevel()->breakBlockAt( mLastClick );
+		
+		for ( auto& origin : positions ) {
+			exclusionList.insert( origin );
+		}
+
 		animationHelper.vanishBlock( positions, onExplosionsFinished );
 	}
 	
 	void CGameplayView::generateDropAnimations( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onDropsFinished ) {
 		auto positions = mGameSession->getLevel()->getDropList();
 
-		for ( auto& path : positions ) {
-			auto origin = std::get<0>(path);
-			// std::cout << "pushing " << origin.first << ", " << origin.second << std::endl;
-			exclusionList.insert( origin );
-		}
-
 		if ( positions.size() > 0 ) {
+			for ( auto& path : positions ) {
+				exclusionList.insert( std::get<0>(path) );
+			}	
 			animationHelper.animateFallingBlocks( positions, onDropsFinished );
 		} else {
 			onDropsFinished( std::pair<int, int>(0,0) );
@@ -119,8 +119,6 @@ namespace BlockyFalls {
 		auto columns = mGameSession->getLevel()->getColumnCollapseList();
 		
 		for ( auto& movement : columns ) {
-			// std::cout << "starting column collapse animation" << std::endl;
-
 			std::vector<CColumn::EColour> column;
 			
 			for ( int c = 0; c < CColumn::kColumnHeight; ++c ) {
@@ -131,15 +129,11 @@ namespace BlockyFalls {
 					continue;
 				}
 
-				std::cout << "pushing " << block.first << ", " << block.second << std::endl;
 				column.push_back( colour  );
+				std::cout << "pusing " << block.first << ", " << ( CColumn::kColumnHeight - c - 1 ) << std::endl;
 				exclusionList.insert( std::pair<int, int>( block.first, CColumn::kColumnHeight - c - 1 ) );
-				// onCollapseFinished( block );
 			}
-
-
-			animationHelper.moveColumn( movement, column, onCollapseFinished );
-				
+			animationHelper.moveColumn( movement, column, onCollapseFinished );				
 		}
 	}
 	
@@ -162,37 +156,35 @@ namespace BlockyFalls {
 
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
-		auto onExplosionsFinished = [&]( std::pair<int, int> origin ){
-
+		auto onExplosionsFinished = [&]( CColumn::CCoordinates origin ){
 			exclusionList.erase( origin );
 
 			if ( exclusionList.size() == 0 ) {
-
-				generateDropAnimations( mGameSession->getLevel(), [&]( std::pair<int, int> origin) {
+				
+				generateDropAnimations( mGameSession->getLevel(), [&]( CColumn::CCoordinates origin) {
+					
 					exclusionList.erase( origin );
-
+					
 					if ( animationFinishedForColumn( origin.first ) ) {
-						// std::cout << "collapse " << origin.first << std::endl;
 						mGameSession->getLevel()->dropBlocksAboveEmptySpaces( origin.first );
 					}
 					
-
 					if ( exclusionList.size() == 0 ) {
-						
-						generateColumnCollapseAnimations( mGameSession->getLevel(), [&](std::pair<int,int> block){
-							
+						generateColumnCollapseAnimations( mGameSession->getLevel(), [&](CColumn::CCoordinates block){							
+							// block.second = -block.second + CColumn::kColumnHeight - 1;
+							// block.first++; //this looks suspicious and smells of logical error
 							exclusionList.erase( block );
-							// std::cout << "exclusionList: ";
+							// //std::cout << "exclusionList: ";
 							// for ( auto& pair : exclusionList ) {
-							// 	std::cout << ";" << pair.first << ", " << pair.second;
+							// 	//std::cout << ";" << pair.first << ", " << pair.second;
 							// }
-							// std::cout << std::endl;
+							// //std::cout << std::endl;
 
-							// std::cout << "removing " << block.first << ", " << block.second << std::endl;
+							std::cout << "removing " << block.first << ", " << block.second << std::endl;
 							if ( exclusionList.size() == 0 ) {
+								std::cout << "------\n\n" << std::endl;								
+								// //std::cout << "finished column collapse animation" << std::endl;
 								
-								// std::cout << "finished column collapse animation" << std::endl;
-								std::cout << "------\n\n" << std::endl;
 								mGameSession->getLevel()->collapseEmptyColumns();
 							}	
 						});
@@ -206,7 +198,7 @@ namespace BlockyFalls {
 	
 	void CGameplayView::onKey( long keyCode ) {
 		if ( exclusionList.size() > 0 ) {
-			std::cout << "busy" << std::endl;
+			//std::cout << "busy" << std::endl;
 			return;
 		}
 		mGameSession->getLevel()->addRandomColumn();
