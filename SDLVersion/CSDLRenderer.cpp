@@ -6,6 +6,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_mixer.h>
+#include <SDL/SDL_ttf.h>
 #include "Vipper/Vipper.h"
 #include "CSDLRenderer.h"
 
@@ -24,6 +25,13 @@ namespace BlockyFalls {
       return id;
     }
     
+    Vipper::IRenderer::FontId CSDLRenderer::loadFont( std::string path, int sizeInPt ) {
+      auto id = mFonts.size() + 1;
+      mFonts[ id ] = TTF_OpenFont(path.c_str(), sizeInPt );
+
+      return id;
+    }
+
     void CSDLRenderer::drawSquare( int x, int y, int x2, int y2, int colour ) {
       SDL_Rect rect;
       rect.x = x;
@@ -33,9 +41,23 @@ namespace BlockyFalls {
       SDL_FillRect( video, &rect, colour );
     };
     
-    void CSDLRenderer::drawTextAt( int x, int y, std::string text ) {};
+    void CSDLRenderer::drawTextAt( int x, int y, std::string text, Vipper::IRenderer::FontId id ) {
+      if ( id == 0 ) {
+        return;
+      }
 
-    void CSDLRenderer::drawBitmapAt( int x, int y, int w, int h, const IRenderer::BitmapId& id ) {
+      SDL_Color color = {255, 0, 0, 255 };
+      auto font = mFonts[ id ];
+      auto result = TTF_RenderText_Solid( font, text.c_str(), color );
+      SDL_Rect rect;
+      rect.x = x;
+      rect.y = y;
+      rect.w = result->w;
+      rect.h = result->h;
+      SDL_BlitSurface( result, nullptr, video, &rect );
+    };
+
+    void CSDLRenderer::drawBitmapAt( int x, int y, int w, int h, const IRenderer::BitmapId id ) {
 
       if ( id == 0 ) {
         return;
@@ -65,6 +87,7 @@ namespace BlockyFalls {
   CSDLRenderer::CSDLRenderer() {
     //REFACTOR!  
     SDL_Init(  SDL_INIT_EVERYTHING );
+    TTF_Init();
     video = SDL_SetVideoMode( 640, 480, 32, 0 );
 
     if ( Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1 ) {

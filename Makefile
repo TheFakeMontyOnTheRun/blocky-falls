@@ -1,6 +1,6 @@
 CXX = clang++
 
-SDL_LIB = -L/usr/lib -lSDL -lSDL_gfx -lSDL_image -lSDL_mixer
+SDL_LIB = -L/usr/lib -lSDL -lSDL_gfx -lSDL_image -lSDL_mixer -lSDL_ttf
 SDL_INCLUDE = -I/usr/local/include `sdl-config --cflags --libs`
 
 CXXFLAGS = -std=c++0x -O2 -g -Wall -fno-exceptions -Weffc++ $(SDL_INCLUDE) -Iinclude 

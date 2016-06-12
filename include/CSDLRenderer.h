@@ -6,6 +6,7 @@ namespace BlockyFalls {
     SDL_Surface *video;
     std::map<IRenderer::BitmapId, SDL_Surface*> mSprites;
     std::map<IRenderer::SoundId, Mix_Chunk*> mSounds;
+    std::map<IRenderer::FontId, TTF_Font*> mFonts;
   public:
     explicit CSDLRenderer();
     void render() override;
@@ -13,9 +14,10 @@ namespace BlockyFalls {
     void update() override;        
     BitmapId loadBitmap( std::string path ) override;
     SoundId loadSound( std::string path ) override;
+    FontId loadFont( std::string path, int sizeInPt ) override;
     void drawSquare( int x, int y, int x2, int y2, int colour ) override;
-    void drawTextAt( int x, int y, std::string text ) override;
-    void drawBitmapAt( int x, int y, int w, int h, const BitmapId& id ) override;
+    void drawTextAt( int x, int y, std::string text, FontId font ) override;
+    void drawBitmapAt( int x, int y, int w, int h, const BitmapId id ) override;
     void playSound( const SoundId& id ) override;    
   };
 }
