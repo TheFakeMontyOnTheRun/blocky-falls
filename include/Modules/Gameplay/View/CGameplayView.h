@@ -10,6 +10,11 @@ namespace BlockyFalls {
     std::map<CColumn::EColour, Vipper::IRenderer::BitmapId> mBitmapsForColours;
     std::vector<Vipper::IRenderer::BitmapId> mExplosionEffect;
     bool animationFinishedForColumn( int x );
+
+    Vipper::IRenderer::SoundId mFallSound;
+    Vipper::IRenderer::SoundId mCollapseSound;
+    Vipper::IRenderer::SoundId mBustedSound;
+    
   public:
     explicit CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer);
 

@@ -35,6 +35,10 @@ namespace BlockyFalls {
 		mBitmapsForColours[ CColumn::EColour::eSpark3	] = renderer->loadBitmap( "res/spark3.png" );
 		mBitmapsForColours[ CColumn::EColour::eSpark4	] = renderer->loadBitmap( "res/spark4.png" );
 		mBitmapsForColours[ CColumn::EColour::eSpark5	] = renderer->loadBitmap( "res/spark5.png" );
+
+		mFallSound = renderer->loadSound( "res/fall.wav" );
+		mCollapseSound = renderer->loadSound( "res/collapse.wav" );
+    	mBustedSound = renderer->loadSound("res/busted.wav");
 	}
 
     void CGameplayView::drawSquareAt( std::tuple<int, int, CColumn::EColour> block ) {
@@ -150,12 +154,21 @@ namespace BlockyFalls {
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
 
 		auto onExplosionsFinished = [&]( CColumn::CCoordinates origin ){
+			
+			if ( exclusionList.size() > 0 ) {
+				getRenderer()->playSound( mBustedSound );
+			}
+			
 			exclusionList.erase( origin );
 
 			if ( exclusionList.size() == 0 ) {
 				
 				generateDropAnimations( mGameSession->getLevel(), [&]( CColumn::CCoordinates origin) {
 					
+					if ( exclusionList.size() > 0 ) {
+						getRenderer()->playSound( mFallSound );
+					}
+
 					exclusionList.erase( origin );
 					
 					if ( animationFinishedForColumn( origin.first ) ) {
@@ -164,6 +177,10 @@ namespace BlockyFalls {
 					
 					if ( exclusionList.size() == 0 ) {
 						generateColumnCollapseAnimations( mGameSession->getLevel(), [&](CColumn::CCoordinates block){							
+
+							if ( exclusionList.size() > 0 ) {
+								getRenderer()->playSound( mCollapseSound );
+							}
 
 							exclusionList.erase( block );
 
