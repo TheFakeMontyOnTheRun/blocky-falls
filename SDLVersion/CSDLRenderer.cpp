@@ -33,13 +33,14 @@ namespace BlockyFalls {
       return id;
     }
 
-    void CSDLRenderer::drawSquare( int x, int y, int x2, int y2, int colour ) {
+    void CSDLRenderer::drawSquare( int x, int y, int x2, int y2, std::array<int,4> colour ) {
       SDL_Rect rect;
       rect.x = x;
       rect.y = y;
       rect.w = ( x2 - x );
       rect.h = ( y2 - y );
-      SDL_FillRect( video, &rect, colour );
+      int colourMerged = SDL_MapRGBA( video->format, colour[ 0 ], colour[ 1 ], colour[ 2 ], colour[ 3 ] );
+      SDL_FillRect( video, &rect, colourMerged );
     };
     
     void CSDLRenderer::drawTextAt( int x, int y, std::string text, std::array<int, 4> colour, Vipper::IRenderer::FontId id ) {
