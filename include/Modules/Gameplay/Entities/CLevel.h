@@ -6,6 +6,7 @@ namespace BlockyFalls {
 
   public:
     static const int kNumberOfColumns = 11;
+    static const int kMaxColumnsAllowed = 9;
 
     explicit CLevel( int initialColumns );
     CColumn::EColour colourAt( int x, int y );
@@ -18,6 +19,7 @@ namespace BlockyFalls {
     void dropBlocksAboveEmptySpaces( int column );
     std::set< CColumn::CCoordinates> getColumnCollapseList();
     bool isColumnEmpty( int index );
+    bool isOver();
   private:
     std::vector<std::shared_ptr<CColumn>> mColumns;
   };

@@ -18,7 +18,7 @@ namespace BlockyFalls {
 		auto session = std::make_shared<BlockyFalls::CGameSession>(1000, 1000, 1);
 		auto view = std::make_shared<BlockyFalls::CGameplayView>( session, 	getRenderer());
 		auto presenter = std::make_shared<BlockyFalls::CGameplayPresenter>( session, view);
-		auto interactor = std::make_shared<BlockyFalls::CGameplayInteractor>( shared_from_this());
+		auto interactor = std::make_shared<BlockyFalls::CGameplayInteractor>( session, shared_from_this());
 		
 		setPresenter( presenter );
 		presenter->setView( view );
@@ -27,11 +27,13 @@ namespace BlockyFalls {
 	}
 	
 	void CGameplayRouter::onFocus(){
+		IRouter::onFocus();
 		getRenderer()->registerClickListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
 		getRenderer()->registerKeyListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
 	}
 	
 	void CGameplayRouter::onRelinquishFocus(){
+		IRouter::onRelinquishFocus();
 		getRenderer()->unregisterClickListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
 		getRenderer()->unregisterKeyListener( std::dynamic_pointer_cast<CGameplayView>(getPresenter()->getView()) );
 	}

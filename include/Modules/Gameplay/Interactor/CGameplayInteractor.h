@@ -3,8 +3,9 @@
 namespace BlockyFalls {
 	class CGameplayInteractor : public Vipper::IInteractor {
 		std::shared_ptr<Vipper::IRouter> mRouter;
+		std::shared_ptr<CGameSession> mSession;
 		public:
-		explicit CGameplayInteractor(std::shared_ptr<Vipper::IRouter> router);
+		explicit CGameplayInteractor(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRouter> router);
 	
 		void interact() override;
 	};

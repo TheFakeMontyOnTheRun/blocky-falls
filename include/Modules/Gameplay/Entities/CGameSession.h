@@ -20,6 +20,7 @@ namespace BlockyFalls {
     void addLine();
     int getPullMeter();
     void update();
+    bool isOver();
     int getScore();
     void addToScore( int score );
   };

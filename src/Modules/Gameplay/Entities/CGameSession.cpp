@@ -39,6 +39,10 @@ namespace BlockyFalls {
         return mScore;
     }
 
+    bool CGameSession::isOver() {
+        return mLevel->isOver();
+    }
+
     void CGameSession::addToScore( int score ) {
         mScore += score;
     }

@@ -20,6 +20,10 @@ namespace BlockyFalls {
             addRandomColumn();
         }
     }
+
+    bool CLevel::isOver() {
+        return mColumns.size() > kMaxColumnsAllowed;
+    }
     
     CColumn::EColour CLevel::colourAt( int x, int y ) {
       

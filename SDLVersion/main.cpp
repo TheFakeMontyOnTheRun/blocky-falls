@@ -22,20 +22,22 @@ int main ( int argc, char **argv ) {
   std::shared_ptr<Vipper::IRouter> router;
   
   auto renderer = std::make_shared<BlockyFalls::CSDLRenderer>();
-  auto gameplayRouter = std::make_shared<BlockyFalls::CGameplayRouter>(renderer);
-  auto titleScreenRouter = std::make_shared<BlockyFalls::CTitleScreenRouter>(renderer,gameplayRouter);
   
-  gameplayRouter->initWithDefaults();
+  auto titleScreenRouter = std::make_shared<BlockyFalls::CTitleScreenRouter>(renderer);
+  
   titleScreenRouter->initWithDefaults();
   
   nextRouter = titleScreenRouter;
   presenter = titleScreenRouter->getPresenter();
+
+  std::vector<std::shared_ptr<Vipper::IRouter>> routers;
   
   do {  
     if ( nextRouter != nullptr ) {
       if ( router != nullptr ) {
         router->onRelinquishFocus();
-      }
+        routers.push_back( router );
+      }      
       router = nextRouter;
       router->onFocus();
       nextRouter = nullptr;
@@ -47,7 +49,14 @@ int main ( int argc, char **argv ) {
     renderer->update();
     renderer->render();
     SDL_Delay(33);
-    nextRouter = router->route();    
+    
+    if ( router->isFinished() ) {
+      nextRouter = routers.back();
+      routers.pop_back();
+    } else {
+      nextRouter = router->route();
+    }
+
   } while ( nextRouter != router );
 
   renderer->shutdown();

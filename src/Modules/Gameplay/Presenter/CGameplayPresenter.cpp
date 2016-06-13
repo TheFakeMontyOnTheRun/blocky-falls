@@ -37,6 +37,7 @@ namespace BlockyFalls {
   void CGameplayPresenter::present() {
 
     mGameSession->update();
+    getInteractor()->interact();
 
     if ( mView->hasAllAnimationsCeased() && mGameSession->shouldAddLine() ) {
       mGameSession->addLine();

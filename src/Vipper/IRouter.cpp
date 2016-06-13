@@ -11,6 +11,10 @@ namespace Vipper {
 		
 		return toReturn;
 	}
+
+	bool IRouter::isFinished() {
+		return !mIsActive;
+	}
 	
 	void IRouter::setNextRoute( std::shared_ptr<IRouter> nextRoute ) {
 		mNextRoute = nextRoute;
@@ -36,10 +40,16 @@ namespace Vipper {
 	std::shared_ptr<Vipper::IRenderer> IRouter::getRenderer() {
 		return mRenderer;
 	}
-	
+
+	void IRouter::finish() {
+		mIsActive = false;
+	}
+
 	void IRouter::onFocus() {
+		mIsActive = true;
 	}
 		
 	void IRouter::onRelinquishFocus() {
+		mIsActive = false;
 	}	
 }

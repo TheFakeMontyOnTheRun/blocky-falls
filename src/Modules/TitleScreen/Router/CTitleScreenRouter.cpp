@@ -19,12 +19,14 @@
 
 namespace BlockyFalls {
 
-		CTitleScreenRouter::CTitleScreenRouter(std::shared_ptr<Vipper::IRenderer> renderer,std::shared_ptr<CGameplayRouter> gameplayRouter): Vipper::IRouter( renderer,"title" ),
-		mGameplayRouter( gameplayRouter ) {	
+		CTitleScreenRouter::CTitleScreenRouter(std::shared_ptr<Vipper::IRenderer> renderer): Vipper::IRouter( renderer,"title" ){	
 		}
 
 		void CTitleScreenRouter::goToGameplay() {
-			setNextRoute( mGameplayRouter );		
+
+			auto gameplayRouter = std::make_shared<BlockyFalls::CGameplayRouter>(getRenderer());
+  			gameplayRouter->initWithDefaults();
+			setNextRoute( gameplayRouter );		
 		}
 		
 		void CTitleScreenRouter::initWithDefaults() {
@@ -39,10 +41,13 @@ namespace BlockyFalls {
 		}
 		
 		void CTitleScreenRouter::onFocus(){
+			IRouter::onFocus();
 			getRenderer()->registerClickListener( std::dynamic_pointer_cast<CTitleScreenView>(getPresenter()->getView()) );
 		}
 		
     	void CTitleScreenRouter::onRelinquishFocus(){
+			IRouter::onRelinquishFocus();
+			setNextRoute( nullptr );
 			getRenderer()->unregisterClickListener( std::dynamic_pointer_cast<CTitleScreenView>(getPresenter()->getView()) );
 		}		
 }

@@ -3,10 +3,9 @@
 
 namespace BlockyFalls {
 	class CTitleScreenRouter : public Vipper::IRouter {
-		std::shared_ptr<CGameplayRouter> mGameplayRouter;
 		public:
 
-		explicit CTitleScreenRouter( std::shared_ptr<Vipper::IRenderer> renderer, std::shared_ptr<CGameplayRouter> gameplayRouter );
+		explicit CTitleScreenRouter( std::shared_ptr<Vipper::IRenderer> renderer );
 
 		void goToGameplay();
 		void initWithDefaults() override;
