@@ -1,0 +1,25 @@
+#ifndef BF_CSDLRenderer_H
+#define BF_CSDLRenderer_H
+
+namespace BlockyFalls {
+  class CSDL2Renderer : public Vipper::IRenderer {
+    SDL_Window *mWindow;
+    SDL_Renderer *mRenderer;
+    std::map<IRenderer::BitmapId, SDL_Texture*> mSprites;
+    std::map<IRenderer::SoundId, Mix_Chunk*> mSounds;
+    std::map<IRenderer::FontId, TTF_Font*> mFonts;
+  public:
+    explicit CSDL2Renderer();
+    void render() override;
+    void shutdown() override;
+    void update() override;        
+    BitmapId loadBitmap( std::string path ) override;
+    SoundId loadSound( std::string path ) override;
+    FontId loadFont( std::string path, int sizeInPt ) override;
+    void drawSquare( int x, int y, int x2, int y2, std::array<int,4> colour ) override;
+    void drawTextAt( int x, int y, std::string text, std::array<int, 4> colour, FontId font ) override;
+    void drawBitmapAt( int x, int y, int w, int h, const BitmapId id ) override;
+    void playSound( const SoundId& id ) override;    
+  };
+}
+#endif

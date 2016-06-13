@@ -29,7 +29,7 @@ namespace Vipper {
     virtual BitmapId loadBitmap( std::string path ) = 0;
     virtual SoundId loadSound( std::string path ) = 0;
     virtual FontId loadFont( std::string path, int sizeInPt ) = 0;
-    virtual void drawSquare( int x, int y, int x2, int y2, int colour ) = 0;
+    virtual void drawSquare( int x, int y, int x2, int y2, std::array<int,4> colour ) = 0;
     virtual void drawTextAt( int x, int y, std::string text, std::array<int, 4> colour, FontId font ) = 0;
     virtual void drawBitmapAt( int x, int y, int w, int h, const BitmapId id ) = 0;
     virtual void playSound( const SoundId& id ) = 0;

@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <array>
 #include <functional>
 #include <map>
 #include <set>
@@ -25,9 +25,9 @@ namespace BlockyFalls {
 	
 	CGameplayView::CGameplayView(std::shared_ptr<CGameSession> session, std::shared_ptr<Vipper::IRenderer> renderer) : IView( renderer ), mGameSession( session ) {
 
-		mBitmapsForColours[ CColumn::EColour::eRed		] = renderer->loadBitmap( "res/red.png" );
+		mBitmapsForColours[ CColumn::EColour::eRed	] = renderer->loadBitmap( "res/red.png" );
 		mBitmapsForColours[ CColumn::EColour::eYellow	] = renderer->loadBitmap( "res/yellow.png" );
-		mBitmapsForColours[ CColumn::EColour::eGrey		] = renderer->loadBitmap( "res/grey.png" );
+		mBitmapsForColours[ CColumn::EColour::eGrey	] = renderer->loadBitmap( "res/grey.png" );
 		mBitmapsForColours[ CColumn::EColour::eBlue 	] = renderer->loadBitmap( "res/blue.png" );
 
 		mBitmapsForColours[ CColumn::EColour::eSpark1 	] = renderer->loadBitmap( "res/spark1.png" );
@@ -51,8 +51,8 @@ namespace BlockyFalls {
 	
     void CGameplayView::drawGaugeAt( std::pair<int, int> position, int howFilled) {
 		auto renderer = getRenderer();
-		renderer->drawSquare(position.first, position.second, 100, 20, 0xFF);
-		renderer->drawSquare(position.first, position.second, howFilled, 20, 0xFF0000);
+		renderer->drawSquare(position.first, position.second, 100, 20, {0,0,255,255});
+		renderer->drawSquare(position.first, position.second, howFilled, 20, {255,0,0,255});
 	}
 	
     std::pair<int, int> CGameplayView::getLastClick() {
@@ -61,7 +61,7 @@ namespace BlockyFalls {
 
     void CGameplayView::show() {
 		auto renderer = getRenderer();
-		renderer->drawSquare( 0, 0, 640 - 64, 480, 0 );
+		renderer->drawSquare( 0, 0, 640 - 64, 480, {0,0,0,255} );
 	
 		auto level = mGameSession->getLevel();
 		
@@ -104,7 +104,7 @@ namespace BlockyFalls {
 
 	void CGameplayView::drawLimitLine() {
 		auto renderer = getRenderer();
-		renderer->drawSquare( 640 - 64, 0, 640, 480, 0xFF0000 );
+		renderer->drawSquare( 640 - 64, 0, 640, 480, {255,0,0,255} );
 	}
 
 	void CGameplayView::generateExplosions( std::shared_ptr<CLevel> level, std::function<void(std::pair<int,int>)> onExplosionsFinished ) {

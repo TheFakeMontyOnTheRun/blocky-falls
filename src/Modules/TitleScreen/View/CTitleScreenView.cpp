@@ -1,3 +1,5 @@
+#include <string>
+#include <array>
 #include "Vipper/Vipper.h"
 #include "Vipper/CLerp.h"
 
@@ -19,10 +21,10 @@ namespace BlockyFalls {
 	
 	void CTitleScreenView::show() {
 		auto renderer = getRenderer();
-		(*renderer).drawSquare( 0,0, 640, 480, 0 );
+		renderer->drawSquare( 0,0, 640, 480, {0,0,0,255} );
 		ellapsed += 33;
 		long delta = lerp.getValue( ellapsed );
-		renderer->drawSquare( mButton.mBounds.mX0 + delta, mButton.mBounds.mY0, mButton.mBounds.mX1 + delta, mButton.mBounds.mY1, 0xFF0000 );
+		renderer->drawSquare( mButton.mBounds.mX0 + delta, mButton.mBounds.mY0, mButton.mBounds.mX1 + delta, mButton.mBounds.mY1, { 255, 0,0,255} );
 		renderer->drawTextAt( 30, 50, "BlockyFalls!", {255,0,255,255}, mTitleTextFont );	
 	}
 	

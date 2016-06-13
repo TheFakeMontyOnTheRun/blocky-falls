@@ -1,3 +1,4 @@
+#include <cmath>
 #include <algorithm>
 #include "Vipper/CLerp.h"
 
