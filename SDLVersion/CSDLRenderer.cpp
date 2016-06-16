@@ -57,6 +57,7 @@ namespace BlockyFalls {
       rect.w = result->w;
       rect.h = result->h;
       SDL_BlitSurface( result, nullptr, video, &rect );
+      SDL_FreeSurface( result );
     };
 
     void CSDLRenderer::drawBitmapAt( int x, int y, int w, int h, const IRenderer::BitmapId id ) {
