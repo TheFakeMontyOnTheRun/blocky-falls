@@ -1,9 +1,9 @@
 CXX = clang++
 
-SDL_LIB = -lSDL2_image -lSDL2_mixer -lSDL2_ttf `sdl2-config --libs`
-SDL_INCLUDE = `sdl2-config --cflags`
+SDL_LIB = -lSDL_image -lSDL_mixer -lSDL_ttf `sdl-config --libs`
+SDL_INCLUDE = `sdl-config --cflags`
 CXXFLAGS = -std=c++0x -O2 -g -Wall -fno-exceptions -Weffc++ $(SDL_INCLUDE) -Iinclude 
-OBJS = SDL2Version/main.o SDL2Version/CSDL2Renderer.o src/Modules/TitleScreen/Interactor/CTitleScreenInteractor.o \
+OBJS = SDLVersion/main.o SDLVersion/CSDLRenderer.o src/Modules/TitleScreen/Interactor/CTitleScreenInteractor.o \
 src/Modules/TitleScreen/Presenter/CTitleScreenPresenter.o src/Modules/TitleScreen/Router/CTitleScreenRouter.o \
 src/Modules/TitleScreen/View/CRect.o src/Modules/TitleScreen/View/CPlayButton.o \
 src/Modules/TitleScreen/View/CTitleScreenView.o src/Vipper/IRenderer.o src/Vipper/IEntity.o src/Vipper/IView.o \
@@ -14,7 +14,7 @@ src/Modules/Gameplay/Presenter/CLevelPresenter.o src/Modules/Gameplay/Router/CGa
 src/Modules/Gameplay/View/CGameplayView.o src/Modules/Gameplay/View/CBlockAnimationHelper.o \
 src/Modules/Gameplay/Interactor/CGameplayInteractor.o
 LIBS = $(SDL_LIB)
-TARGET = blockyfalls_OSX.bin
+TARGET = blockyfalls
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
