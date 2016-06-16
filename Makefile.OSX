@@ -1,6 +1,6 @@
 CXX = clang++
 
-SDL_LIB = -lSDL2_image -lSDL2_mixer -lSDL2_ttf `sdl2-config --libs` -L/Library/Frameworks/SDL2.framework -F/Library/Frameworks -F/Users/monty/Library/Frameworks -framework SDL2
+SDL_LIB = -lSDL2_image -lSDL2_mixer -lSDL2_ttf `sdl2-config --libs`
 SDL_INCLUDE = `sdl2-config --cflags`
 CXXFLAGS = -std=c++0x -O2 -g -Wall -fno-exceptions -Weffc++ $(SDL_INCLUDE) -Iinclude 
 OBJS = SDL2Version/main.o SDL2Version/CSDL2Renderer.o src/Modules/TitleScreen/Interactor/CTitleScreenInteractor.o \
@@ -17,7 +17,7 @@ LIBS = $(SDL_LIB)
 TARGET = blockyfalls
 
 $(TARGET):	$(OBJS)
-	$(CXX) $(sdl2-config --cflags --libs) -I/Library/Frameworks/SDL2.framework/Headers -F/Library/Frameworks -framework SDL2 -o $(TARGET) $(OBJS) $(LIBS)
+	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
 
 all:   $(TARGET)
 
