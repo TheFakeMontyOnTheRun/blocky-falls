@@ -15,7 +15,7 @@ src/Modules/Gameplay/Presenter/CLevelPresenter.o src/Modules/Gameplay/Router/CGa
 src/Modules/Gameplay/View/CGameplayView.o src/Modules/Gameplay/View/CBlockAnimationHelper.o \
 src/Modules/Gameplay/Interactor/CGameplayInteractor.o
 LIBS = $(SDL_LIB)
-TARGET = blockyfalls
+TARGET = blockyfalls_linux.bin
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)

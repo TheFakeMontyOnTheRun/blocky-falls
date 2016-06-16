@@ -14,7 +14,7 @@ src/Modules/Gameplay/Presenter/CLevelPresenter.o src/Modules/Gameplay/Router/CGa
 src/Modules/Gameplay/View/CGameplayView.o src/Modules/Gameplay/View/CBlockAnimationHelper.o \
 src/Modules/Gameplay/Interactor/CGameplayInteractor.o
 LIBS = $(SDL_LIB)
-TARGET = blockyfalls
+TARGET = blockyfalls_OSX.bin
 
 $(TARGET):	$(OBJS)
 	$(CXX) $(sdl2-config --cflags --libs) -I/Library/Frameworks/SDL2.framework/Headers -F/Library/Frameworks -framework SDL2 -o $(TARGET) $(OBJS) $(LIBS)
