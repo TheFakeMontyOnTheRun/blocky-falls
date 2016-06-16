@@ -67,7 +67,7 @@ namespace BlockyFalls {
 		
 		std::set<std::pair<int,int>> positions;
 
-		static const auto drawBlock = [&](std::pair<float,float> blockPosition, CColumn::EColour piece ) {
+		const auto drawBlock = [&](std::pair<float,float> blockPosition, CColumn::EColour piece ) {
 			auto x = blockPosition.first;
 			auto y = blockPosition.second;			
 			auto screenX0 = (x * 64);
@@ -187,7 +187,7 @@ namespace BlockyFalls {
 		mLastClick.first = position.first / 64;
 		mLastClick.second = CColumn::kColumnHeight - ( position.second / 64 ) - 1;
 
-		const static auto onExplosionsFinished = [&]( CColumn::CCoordinates origin ){
+		const auto onExplosionsFinished = [&]( CColumn::CCoordinates origin ){
 			if ( !hasAllAnimationsCeased() ) {
 				getRenderer()->playSound( mBustedSound );
 			}
