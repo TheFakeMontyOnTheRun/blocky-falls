@@ -51,8 +51,8 @@ namespace BlockyFalls {
 	
     void CGameplayView::drawGaugeAt( std::pair<int, int> position, int howFilled) {
 		auto renderer = getRenderer();
-		renderer->drawSquare(position.first, position.second, 100, 20, {0,0,255,255});
-		renderer->drawSquare(position.first, position.second, howFilled, 20, {255,0,0,255});
+		renderer->drawSquare(position.first, position.second, 100, position.second + 20, {0,0,255,255});
+		renderer->drawSquare(position.first, position.second, howFilled, position.second + 20, {255,0,0,255});
 	}
 	
     std::pair<int, int> CGameplayView::getLastClick() {
