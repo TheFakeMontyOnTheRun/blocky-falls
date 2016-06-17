@@ -4,6 +4,7 @@ namespace BlockyFalls {
 	class CHighScoresScreenView : public Vipper::IView, public Vipper::IRenderer::IClickListener {
 		
 		Vipper::IRenderer::FontId mTitleTextFont;
+		Vipper::IRenderer::FontId mInstructionsFont;
 		public:
 		explicit CHighScoresScreenView(std::shared_ptr<Vipper::IRenderer> renderer);
 		
