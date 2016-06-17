@@ -53,7 +53,7 @@ namespace BlockyFalls {
         float x = position.first;
         float y = position.second;
         drawHelper( position, mColour );
-    }, 500 * ( to.second - from.second ), onEnded), mColour( colour ) {
+    }, 500 , onEnded), mColour( colour ) {
   }
 
   CBlockAnimationHelper::MoveColumnAnimation::MoveColumnAnimation(std::pair<int, int> from, std::pair<int, int> to, CColumn::EColour colour, std::function<void(std::pair<int, int>)> onEnded) 
@@ -65,7 +65,7 @@ namespace BlockyFalls {
       auto position = animation.getPosition();
       position.first = ( fabs( destination.first - origin.first ) - ( position.first - origin.first)) + destination.first;
       drawHelper( position, mColour );
-    }, 500 * fabs( to.first - from.first ), onEnded), mColour( colour ) {
+    }, 500, onEnded), mColour( colour ) {
   }
 
   void CBlockAnimationHelper::moveColumn( std::pair<int, int> movement, std::vector<CColumn::EColour> column, std::function<void(std::pair<int, int>)> onEnded) {
