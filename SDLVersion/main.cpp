@@ -36,7 +36,10 @@ int main ( int argc, char **argv ) {
     if ( nextRouter != nullptr ) {
       if ( router != nullptr ) {
         router->onRelinquishFocus();
-        routers.push_back( router );
+        if ( !router->isFinished() ) {
+          routers.push_back( router );
+        }
+        
       }      
       router = nextRouter;
       router->onFocus();
@@ -50,11 +53,12 @@ int main ( int argc, char **argv ) {
     renderer->render();
     SDL_Delay(33);
     
-    if ( router->isFinished() ) {
+    nextRouter = router->route();
+
+    if ( router->isFinished() && nextRouter == nullptr ) {
+      
       nextRouter = routers.back();
       routers.pop_back();
-    } else {
-      nextRouter = router->route();
     }
 
   } while ( nextRouter != router );

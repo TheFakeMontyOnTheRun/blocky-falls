@@ -15,7 +15,7 @@ namespace BlockyFalls {
 	
 		void CGameplayInteractor::interact() {
 			if ( mSession->isOver() ) {
-				mRouter->finish();
+				std::dynamic_pointer_cast<CGameplayRouter>(mRouter)->goToGameOver();				
 			}			
 		}
 }

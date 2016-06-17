@@ -9,6 +9,8 @@
 #include "Modules/Gameplay/Presenter/CGameplayPresenter.h"
 #include "Modules/Gameplay/Interactor/CGameplayInteractor.h"
 
+#include "Modules/HighScoresScreen/Router/CHighScoresScreenRouter.h"
+
 namespace BlockyFalls {
 	
 	CGameplayRouter::CGameplayRouter(std::shared_ptr<Vipper::IRenderer> renderer) : Vipper::IRouter( renderer, "game" ) {
@@ -24,6 +26,13 @@ namespace BlockyFalls {
 		presenter->setView( view );
 		presenter->setInteractor( interactor );
 		view->setPresenter( presenter );
+	}
+
+	void CGameplayRouter::goToGameOver() {
+		auto gameOverRouter = std::make_shared<BlockyFalls::CHighScoresScreenRouter>(getRenderer());
+  		gameOverRouter->initWithDefaults();
+		setNextRoute( gameOverRouter );
+		finish();
 	}
 	
 	void CGameplayRouter::onFocus(){

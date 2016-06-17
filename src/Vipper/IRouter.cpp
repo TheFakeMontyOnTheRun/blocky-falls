@@ -3,6 +3,7 @@
 
 namespace Vipper {
 	IRouter::IRouter( std::shared_ptr<Vipper::IRenderer> renderer, std::string name ): mName( name ), mNextRoute( nullptr ), mRenderer( renderer ) {
+		mIsActive = true;
 	}
 	
 	std::shared_ptr<IRouter> IRouter::route() {
@@ -46,10 +47,10 @@ namespace Vipper {
 	}
 
 	void IRouter::onFocus() {
-		mIsActive = true;
+		// mIsActive = true;
 	}
 		
 	void IRouter::onRelinquishFocus() {
-		mIsActive = false;
+		// mIsActive = false;
 	}	
 }

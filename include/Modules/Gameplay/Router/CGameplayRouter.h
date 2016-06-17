@@ -6,10 +6,9 @@ namespace BlockyFalls {
   public:
     explicit CGameplayRouter(std::shared_ptr<Vipper::IRenderer> renderer);
     void displayGameOverScreen();
-    void displayNextLevelScreen();
-    
     void initWithDefaults() override;
     void onFocus() override;
+    void goToGameOver();
     void onRelinquishFocus() override;
   };
 }
