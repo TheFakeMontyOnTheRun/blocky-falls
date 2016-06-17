@@ -1,4 +1,3 @@
-// #include <iostream>
 #include <algorithm>
 #include <random>
 #include <utility>
@@ -38,14 +37,13 @@ namespace BlockyFalls {
             if ( block == CColumn::EColour::eNothing ) {
                 emptyBlocks++;
             } else {
-                solidBlocks++;
-
                 if ( emptyBlocks > 0 ) {
                     auto from = transformPosition( std::pair<int,int>( xPos, position ) );
-                    auto to = transformPosition( std::pair<int, int>(xPos, solidBlocks - 1 ) );
+                    auto to = transformPosition( std::pair<int, int>(xPos, solidBlocks ) );
                     auto path = std::tuple< std::pair<int,int>, std::pair<int, int>, CColumn::EColour >( from, to, block );
                     toReturn.push_back(  path );
-                }                
+                }
+                solidBlocks++;                
             }
 
             ++position;            
