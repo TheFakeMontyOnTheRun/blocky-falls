@@ -19,7 +19,7 @@ src/Modules/HighScoresScreen/Presenter/CHighScoresScreenPresenter.o \
 src/Modules/HighScoresScreen/Router/CHighScoresScreenRouter.o \
 
 LIBS = $(SDL_LIB)
-TARGET = blockyfalls_OSX.bin
+TARGET = blockyfalls
 
 $(TARGET):	$(OBJS)
 	$(CXX) -o $(TARGET) $(OBJS) $(LIBS)
