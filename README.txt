@@ -1,24 +1,23 @@
 # Blocky Falls
 My own take on "Falling columns of matching objects"
 
-To build under linux (using SDL 1.2), run
-$make -f Makefile.Linux
+To build under Linux or OSX using SDL 1.2, run
+$make -f Makefile.SDL1
 
 To build under OSX (using SDL 2.0), run
 $make -f Makefile.OSX
 
-Unfortunately, the OSX build is not working. But under Linux, it does work.
-
 And why not use SDL 2.0 straight away? Emscripten makes it easier to port SDL1.
 And why the strange architecture? This was a attempt to make it easier to port
-to Android.
+to Android. I still have to sort it out a little better - but I do believe it 
+will make it easier to port games to Android NDK.
 
 
 How to play:
-As the "frugal" title screen appears, just the screen to start.
+As the "frugal" title screen appears, just the press "Play" to start.
 Clicking on matches should break the blocks and join the columns. Once the last
 column reaches the red area, it's game over (and you're redirected to the title
-screen).
+screen after clicking the screen).
 
 To request a new column to appear, just press space (or any other key).
 To quit, press "q" from the game screen.
