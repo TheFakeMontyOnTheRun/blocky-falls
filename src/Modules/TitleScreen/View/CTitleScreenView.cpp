@@ -12,23 +12,25 @@
 
 namespace BlockyFalls {
 	
-	Vipper::CLerp lerp(0 , 200, 2000);
-	long ellapsed = 0;
 	CTitleScreenView::CTitleScreenView( std::shared_ptr<Vipper::IRenderer> renderer ) : IView( renderer ) {
-		mButton.mBounds = CRect( 200, 300, 250, 350 );
-		mTitleTextFont = renderer->loadFont( "res/albasuper.ttf", 40 );
+		mButton = std::make_shared<CPlayButton>( renderer, CRect( 310, 400, 400, 450 ), "Play", [&](){
+			std::dynamic_pointer_cast<CTitleScreenPresenter>(getPresenter())->onClickOnPlayButton();
+		} );
+		
+		mTitleTextFont = renderer->loadFont( "res/albasuper.ttf", 50 );
+		mCreditsTextFont = renderer->loadFont( "res/albasuper.ttf", 30 );
 	}
 	
 	void CTitleScreenView::show() {
 		auto renderer = getRenderer();
 		renderer->drawSquare( 0,0, 640, 480, {0,0,0,255} );
-		ellapsed += 33;
-		long delta = lerp.getValue( ellapsed );
-		renderer->drawSquare( mButton.mBounds.mX0 + delta, mButton.mBounds.mY0, mButton.mBounds.mX1 + delta, mButton.mBounds.mY1, { 255, 0,0,255} );
-		renderer->drawTextAt( 30, 50, "BlockyFalls!", {255,0,255,255}, mTitleTextFont );	
+
+		mButton->show();
+		renderer->drawTextAt( 100, 100, "BlockyFalls!", {255,0,255,255}, mTitleTextFont );	
+		renderer->drawTextAt( 150, 200, "A game by Daniel Monteiro", {255,255,255,255}, mCreditsTextFont );
 	}
 	
 	void CTitleScreenView::onClick( std::pair<int, int> position ) {
-		std::dynamic_pointer_cast<CTitleScreenPresenter>(getPresenter())->onClickOnPlayButton();
+		mButton->click(position);
 	}
 }

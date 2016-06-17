@@ -14,11 +14,7 @@ namespace BlockyFalls {
 		return mY1 - mY0;
 	}
 	
-	bool isInside( int x, int y ) {
-		return false;
-	}
-	
-	bool insersects( const CRect& another ) {
-		return false;
+	bool CRect::isInside( int x, int y ) {
+		return (mX0 <= x && x <= mX1 ) && ( mY0 <= y && y <= mY1 );
 	}
 }
