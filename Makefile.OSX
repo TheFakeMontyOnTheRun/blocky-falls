@@ -12,7 +12,12 @@ src/Vipper/CAnimation.o src/Modules/Gameplay/Entities/CColumn.o src/Modules/Game
 src/Modules/Gameplay/Entities/CGameSession.o src/Modules/Gameplay/Presenter/CGameplayPresenter.o \
 src/Modules/Gameplay/Presenter/CLevelPresenter.o src/Modules/Gameplay/Router/CGameplayRouter.o \
 src/Modules/Gameplay/View/CGameplayView.o src/Modules/Gameplay/View/CBlockAnimationHelper.o \
-src/Modules/Gameplay/Interactor/CGameplayInteractor.o
+src/Modules/Gameplay/Interactor/CGameplayInteractor.o \
+src/Modules/HighScoresScreen/View/CHighScoresScreenView.o \
+src/Modules/HighScoresScreen/Interactor/CHighScoresScreenInteractor.o \
+src/Modules/HighScoresScreen/Presenter/CHighScoresScreenPresenter.o \
+src/Modules/HighScoresScreen/Router/CHighScoresScreenRouter.o \
+
 LIBS = $(SDL_LIB)
 TARGET = blockyfalls_OSX.bin
 

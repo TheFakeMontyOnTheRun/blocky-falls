@@ -1,3 +1,4 @@
+#include <array>
 #include <iostream>
 #include "Vipper/Vipper.h"
 #include "Modules/HighScoresScreen/Presenter/CHighScoresScreenPresenter.h"
