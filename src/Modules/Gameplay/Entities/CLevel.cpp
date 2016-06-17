@@ -22,6 +22,7 @@ namespace BlockyFalls {
     }
 
     bool CLevel::isOver() {
+        // return false;
         return mColumns.size() > kMaxColumnsAllowed;
     }
     
@@ -139,7 +140,6 @@ namespace BlockyFalls {
                     int from = position;
                     int to = position - emptyColumns;
                     auto path = std::pair<int, int>( from, to);
-                    // std::cout << "column " << from << " to position " << to << std::endl;
                     toReturn.insert(  path );
                 }
             }
