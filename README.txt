@@ -24,7 +24,7 @@ To quit, press "q" from the game screen.
 
 Unfortunately, this was a incredible rush and I wish I could give this game more
 time. I know I can do better than this.
-I know there are memory leaks due to cyclic dependencies and lots of inneficient
+I know there are memory leaks due to cyclic dependencies and lots of inefficient
 copies (since some things aren't using std::move) and thrashing due to the 
 smart pointers doing their job. Again, I wish I could give it more time.
 
