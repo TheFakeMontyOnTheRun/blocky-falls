@@ -1,0 +1,7 @@
+.idea
+*.o
+cmake-build-debug
+index.data
+index.html
+index.js
+index.wasm
