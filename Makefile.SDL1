@@ -1,8 +1,8 @@
-CXX = clang++
-
 SDL_LIB = -lSDL_image -lSDL_mixer -lSDL_ttf `sdl-config --libs`
 SDL_INCLUDE = `sdl-config --cflags`
-CXXFLAGS = -std=c++0x -O2 -g -Wall -fno-exceptions -Weffc++ $(SDL_INCLUDE) -Iinclude 
+CXXFLAGS = -std=c++14 -O2 -g -Wall -fno-exceptions -Weffc++ $(SDL_INCLUDE) -Iinclude 
+
+
 OBJS = SDLVersion/main.o SDLVersion/CSDLRenderer.o src/Modules/TitleScreen/Interactor/CTitleScreenInteractor.o \
 src/Modules/TitleScreen/Presenter/CTitleScreenPresenter.o src/Modules/TitleScreen/Router/CTitleScreenRouter.o \
 src/Modules/TitleScreen/View/CRect.o src/Modules/TitleScreen/View/CPlayButton.o \
